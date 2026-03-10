@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { useMarket, useOrderbook } from '@/lib/hooks/useMarket'
 import { useOrders } from '@/lib/hooks/useOrders'
@@ -13,11 +14,14 @@ import MarketStatusBadge from '@/components/markets/MarketStatusBadge'
 import Spinner from '@/components/ui/Spinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { formatDate } from '@/lib/utils/format'
+import { Position } from '@/lib/types/api'
 
 export default function MarketDetailPage() {
   const params = useParams()
   const marketId = Number(params.id)
   const { user } = useAuth()
+
+  const [selectedPosition, setSelectedPosition] = useState<Position>('YES')
 
   const { data: market, isLoading, error } = useMarket(marketId)
   const { data: orderbook } = useOrderbook(marketId)
@@ -37,6 +41,12 @@ export default function MarketDetailPage() {
   }
 
   const isOpen = market.status === 'Open'
+
+  // 현재 마켓에서 선택된 포지션의 보유량
+  const heldQuantity =
+    positions?.find(
+      (p) => p.market_id === marketId && p.position === selectedPosition
+    )?.quantity ?? 0
 
   return (
     <div>
@@ -58,7 +68,7 @@ export default function MarketDetailPage() {
       {/* Main grid */}
       <div className="grid gap-4 lg:grid-cols-2">
         {orderbook ? (
-          <Orderbook orderbook={orderbook} />
+          <Orderbook orderbook={orderbook} selectedPosition={selectedPosition} />
         ) : (
           <div className="flex items-center justify-center rounded-lg border bg-white p-8">
             <Spinner />
@@ -67,7 +77,13 @@ export default function MarketDetailPage() {
 
         <div>
           {user ? (
-            <OrderForm marketId={marketId} disabled={!isOpen} />
+            <OrderForm
+              marketId={marketId}
+              disabled={!isOpen}
+              selectedPosition={selectedPosition}
+              onPositionChange={setSelectedPosition}
+              heldQuantity={heldQuantity}
+            />
           ) : (
             <div className="rounded-lg border bg-white p-6 text-center text-sm text-gray-500">
               <a href="/auth/login" className="text-blue-600 hover:underline">Login</a> to place orders
@@ -80,11 +96,11 @@ export default function MarketDetailPage() {
       {user && (
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           <div className="rounded-lg border bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold text-gray-600 uppercase tracking-wide">My Positions</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">My Positions</h3>
             <PositionList positions={positions || []} marketId={marketId} />
           </div>
           <div className="rounded-lg border bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold text-gray-600 uppercase tracking-wide">My Orders</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">My Orders</h3>
             <OrderList orders={orders || []} marketId={marketId} />
           </div>
         </div>
