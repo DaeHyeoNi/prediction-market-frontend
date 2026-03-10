@@ -6,14 +6,14 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
   formData.append('username', data.username)
   formData.append('password', data.password)
 
-  const response = await apiClient.post<LoginResponse>('/auth/login', formData, {
+  const response = await apiClient.post<LoginResponse>('/users/login', formData, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })
   return response.data
 }
 
 export async function register(data: RegisterRequest): Promise<User> {
-  const response = await apiClient.post<User>('/auth/register', data)
+  const response = await apiClient.post<User>('/users/register', data)
   return response.data
 }
 

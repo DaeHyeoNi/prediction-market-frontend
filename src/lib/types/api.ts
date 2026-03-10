@@ -1,16 +1,19 @@
 export type MarketStatus = 'Open' | 'Closed' | 'Resolved'
 export type Position = 'YES' | 'NO'
-export type OrderType = 'BID' | 'ASK'
-export type OrderStatus = 'Pending' | 'Filled' | 'Cancelled' | 'PartiallyFilled'
-export type OrderResult = 'YES' | 'NO' | null
+export type OrderType = 'Bid' | 'Ask'
+export type OrderStatus = 'Pending' | 'Open' | 'Partial' | 'Filled' | 'Cancelled'
+export type MarketResult = 'YES' | 'NO' | null
 
 export interface Market {
   id: number
   title: string
+  description: string | null
   status: MarketStatus
-  result: OrderResult
+  result: MarketResult
   closes_at: string
-  created_by: string
+  created_by: number
+  created_at: string
+  resolved_at: string | null
 }
 
 export interface OrderbookEntry {
@@ -23,38 +26,40 @@ export interface OrderbookSide {
   asks: OrderbookEntry[]
 }
 
-export interface MarketDetail extends Market {
-  orderbook: {
-    YES: OrderbookSide
-    NO: OrderbookSide
-  }
+export interface Orderbook {
+  YES: OrderbookSide
+  NO: OrderbookSide
 }
 
 export interface Order {
   id: number
+  user_id: number
   market_id: number
   position: Position
   order_type: OrderType
   price: number
   quantity: number
-  filled_quantity: number
+  remaining_quantity: number
   status: OrderStatus
+  locked_points: number
   created_at: string
+  updated_at: string
 }
 
 export interface UserPosition {
+  id: number
+  user_id: number
   market_id: number
-  market_title: string
   position: Position
   quantity: number
-  average_price: number
+  avg_price: number
 }
 
 export interface User {
   id: number
   username: string
-  email: string
-  balance: number
+  total_points: number
+  available_points: number
 }
 
 export interface PlaceOrderRequest {
@@ -65,17 +70,13 @@ export interface PlaceOrderRequest {
   quantity: number
 }
 
-export interface PlaceOrderResponse {
-  order_id: number
-  message: string
-}
-
 export interface CreateMarketRequest {
   title: string
   closes_at: string
+  description?: string
 }
 
-export interface SettleMarketRequest {
+export interface ResolveMarketRequest {
   result: Position
 }
 
@@ -91,6 +92,5 @@ export interface LoginResponse {
 
 export interface RegisterRequest {
   username: string
-  email: string
   password: string
 }

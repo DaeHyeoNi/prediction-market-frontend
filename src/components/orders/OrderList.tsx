@@ -23,7 +23,7 @@ export default function OrderList({ orders, marketId }: OrderListProps) {
             <th className="pb-2 pr-4">Type</th>
             <th className="pb-2 pr-4">Price</th>
             <th className="pb-2 pr-4">Qty</th>
-            <th className="pb-2 pr-4">Filled</th>
+            <th className="pb-2 pr-4">Remaining</th>
             <th className="pb-2 pr-4">Status</th>
             <th className="pb-2">Date</th>
           </tr>
@@ -35,7 +35,7 @@ export default function OrderList({ orders, marketId }: OrderListProps) {
               <td className="py-2 pr-4 text-gray-600">{order.order_type}</td>
               <td className="py-2 pr-4 font-mono">{order.price}</td>
               <td className="py-2 pr-4">{order.quantity}</td>
-              <td className="py-2 pr-4">{order.filled_quantity}</td>
+              <td className="py-2 pr-4">{order.remaining_quantity}</td>
               <td className="py-2 pr-4">
                 <OrderStatusBadge status={order.status} />
               </td>

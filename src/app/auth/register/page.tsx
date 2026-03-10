@@ -15,7 +15,6 @@ import { useState } from 'react'
 
 const schema = z.object({
   username: z.string().min(3),
-  email: z.string().email(),
   password: z.string().min(6),
 })
 
@@ -53,7 +52,6 @@ export default function RegisterPage() {
       <h1 className="mb-6 text-center text-2xl font-bold">Register</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 rounded-lg border bg-white p-6 shadow-sm">
         <Input label="Username" {...register('username')} error={errors.username?.message} />
-        <Input label="Email" type="email" {...register('email')} error={errors.email?.message} />
         <Input label="Password" type="password" {...register('password')} error={errors.password?.message} />
         <ErrorMessage message={error} />
         <Button type="submit" isLoading={isSubmitting} className="w-full">

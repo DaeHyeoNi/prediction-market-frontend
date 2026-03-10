@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils/cn'
 
 const schema = z.object({
   position: z.enum(['YES', 'NO']),
-  order_type: z.enum(['BID', 'ASK']),
+  order_type: z.enum(['Bid', 'Ask']),
   price: z.number().min(1).max(99),
   quantity: z.number().min(1).int(),
 })
@@ -36,7 +36,7 @@ export default function OrderForm({ marketId, disabled }: OrderFormProps) {
     resolver: zodResolver(schema),
     defaultValues: {
       position: 'YES',
-      order_type: 'BID',
+      order_type: 'Bid',
       price: 50,
       quantity: 1,
     },
@@ -88,7 +88,7 @@ export default function OrderForm({ marketId, disabled }: OrderFormProps) {
         <div>
           <p className="mb-1.5 text-sm font-medium text-gray-700">Order Type</p>
           <div className="flex gap-2">
-            {(['BID', 'ASK'] as OrderType[]).map((type) => (
+            {(['Bid', 'Ask'] as OrderType[]).map((type) => (
               <button
                 key={type}
                 type="button"
@@ -100,7 +100,7 @@ export default function OrderForm({ marketId, disabled }: OrderFormProps) {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 )}
               >
-                {type === 'BID' ? 'Buy' : 'Sell'}
+                {type === 'Bid' ? 'Buy' : 'Sell'}
               </button>
             ))}
           </div>

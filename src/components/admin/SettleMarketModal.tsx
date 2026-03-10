@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { settleMarket } from '@/lib/api/admin'
+import { resolveMarket } from '@/lib/api/admin'
 import { queryKeys } from '@/lib/hooks/queryKeys'
 import { useToast } from '@/context/ToastContext'
 import { Position } from '@/lib/types/api'
@@ -27,17 +27,20 @@ export default function SettleMarketModal({
   const { showToast } = useToast()
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => settleMarket(marketId, { result }),
+    mutationFn: () => resolveMarket(marketId, { result }),
     onSuccess: () => {
-      showToast('Market settled!', 'success')
+      showToast('Market settlement initiated!', 'success')
       queryClient.invalidateQueries({ queryKey: queryKeys.markets })
       onClose()
     },
-    onError: () => showToast('Failed to settle market.', 'error'),
+    onError: (e: unknown) => {
+      const msg = (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Failed to resolve market.'
+      showToast(msg, 'error')
+    },
   })
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Settle Market">
+    <Modal isOpen={isOpen} onClose={onClose} title="Resolve Market">
       <p className="mb-4 text-sm text-gray-600">{marketTitle}</p>
       <div className="mb-4 flex gap-2">
         {(['YES', 'NO'] as Position[]).map((pos) => (
@@ -61,7 +64,7 @@ export default function SettleMarketModal({
           Cancel
         </Button>
         <Button onClick={() => mutate()} isLoading={isPending} className="flex-1">
-          Settle as {result}
+          Resolve as {result}
         </Button>
       </div>
     </Modal>

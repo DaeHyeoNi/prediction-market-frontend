@@ -35,8 +35,8 @@ export default function ProfilePage() {
         <h1 className="text-2xl font-bold">Profile</h1>
         <div className="text-sm text-gray-600">
           <span className="font-medium">{user.username}</span>
-          <span className="ml-3 text-gray-400">{user.email}</span>
-          <span className="ml-3 font-mono text-blue-600">Balance: {user.balance}</span>
+          <span className="ml-4 text-gray-500">Total: <span className="font-mono text-gray-800">{user.total_points.toLocaleString()}</span></span>
+          <span className="ml-4 text-gray-500">Available: <span className="font-mono text-blue-600">{user.available_points.toLocaleString()}</span></span>
         </div>
       </div>
 

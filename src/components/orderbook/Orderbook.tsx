@@ -1,8 +1,8 @@
-import { MarketDetail } from '@/lib/types/api'
+import { Orderbook as OrderbookType } from '@/lib/types/api'
 import OrderbookSide from './OrderbookSide'
 
 interface OrderbookProps {
-  orderbook: MarketDetail['orderbook']
+  orderbook: OrderbookType
 }
 
 export default function Orderbook({ orderbook }: OrderbookProps) {

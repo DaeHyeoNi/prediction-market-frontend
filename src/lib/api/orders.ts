@@ -1,18 +1,13 @@
 import apiClient from './client'
-import { Order, PlaceOrderRequest, PlaceOrderResponse } from '@/lib/types/api'
+import { Order, PlaceOrderRequest } from '@/lib/types/api'
 
-export async function placeOrder(data: PlaceOrderRequest): Promise<PlaceOrderResponse> {
-  const response = await apiClient.post<PlaceOrderResponse>('/orders', data)
+export async function placeOrder(data: PlaceOrderRequest): Promise<Order> {
+  const response = await apiClient.post<Order>('/orders', data)
   return response.data
 }
 
 export async function getMyOrders(): Promise<Order[]> {
-  const response = await apiClient.get<Order[]>('/orders/me')
-  return response.data
-}
-
-export async function getOrder(id: number): Promise<Order> {
-  const response = await apiClient.get<Order>(`/orders/${id}`)
+  const response = await apiClient.get<Order[]>('/orders')
   return response.data
 }
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { useMarket } from '@/lib/hooks/useMarket'
+import { useMarket, useOrderbook } from '@/lib/hooks/useMarket'
 import { useOrders } from '@/lib/hooks/useOrders'
 import { usePositions } from '@/lib/hooks/usePositions'
 import { useAuth } from '@/context/AuthContext'
@@ -20,6 +20,7 @@ export default function MarketDetailPage() {
   const { user } = useAuth()
 
   const { data: market, isLoading, error } = useMarket(marketId)
+  const { data: orderbook } = useOrderbook(marketId)
   const { data: orders } = useOrders()
   const { data: positions } = usePositions()
 
@@ -43,6 +44,9 @@ export default function MarketDetailPage() {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{market.title}</h1>
+          {market.description && (
+            <p className="mt-1 text-sm text-gray-500">{market.description}</p>
+          )}
           <p className="mt-1 text-sm text-gray-500">Closes: {formatDate(market.closes_at)}</p>
           {market.result && (
             <p className="mt-1 text-sm font-medium text-blue-600">Result: {market.result}</p>
@@ -53,7 +57,13 @@ export default function MarketDetailPage() {
 
       {/* Main grid */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Orderbook orderbook={market.orderbook} />
+        {orderbook ? (
+          <Orderbook orderbook={orderbook} />
+        ) : (
+          <div className="flex items-center justify-center rounded-lg border bg-white p-8">
+            <Spinner />
+          </div>
+        )}
 
         <div>
           {user ? (
