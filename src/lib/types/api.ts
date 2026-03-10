@@ -67,6 +67,9 @@ export interface User {
   username: string
   total_points: number
   available_points: number
+  locked_points?: number
+  portfolio_value?: number
+  total_wealth?: number
 }
 
 export interface PlaceOrderRequest {

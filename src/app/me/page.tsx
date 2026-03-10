@@ -1,52 +1,91 @@
 'use client'
 
 import { useAuth } from '@/context/AuthContext'
+import { useMe } from '@/lib/hooks/useMe'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Spinner from '@/components/ui/Spinner'
 
 export default function MePage() {
-  const { user, isLoading } = useAuth()
+  const { user: authUser, isLoading: authLoading } = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    if (!isLoading && !user) router.push('/auth/login')
-  }, [isLoading, user, router])
+  // 5초 폴링으로 최신 포트폴리오 데이터 유지
+  const { data: user } = useMe()
 
-  if (isLoading || !user) {
+  useEffect(() => {
+    if (!authLoading && !authUser) router.push('/auth/login')
+  }, [authLoading, authUser, router])
+
+  if (authLoading || !authUser) {
     return <div className="flex justify-center py-12"><Spinner size="lg" /></div>
   }
 
-  const locked = user.total_points - user.available_points
+  // 폴링 데이터 우선, 없으면 auth 캐시 사용
+  const me = user ?? authUser
+
+  const locked = me.locked_points ?? (me.total_points - me.available_points)
+  const portfolioValue = me.portfolio_value ?? 0
+  const totalWealth = me.total_wealth ?? (me.total_points + portfolioValue)
 
   return (
     <div className="mx-auto max-w-md">
       <h1 className="mb-6 text-2xl font-bold">My Account</h1>
 
-      <div className="rounded-lg border bg-white p-6 shadow-sm">
-        <p className="mb-4 text-lg font-semibold text-gray-800">{user.username}</p>
+      <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
+        {/* 헤더: 유저명 + 총 자산 */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5 text-white">
+          <p className="mb-1 text-sm opacity-80">{me.username}</p>
+          <p className="text-xs opacity-70 mb-3">Total Wealth</p>
+          <p className="text-3xl font-bold font-mono">{totalWealth.toLocaleString()}</p>
+          <p className="text-xs opacity-60 mt-1">pts</p>
+        </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
-            <span className="text-sm text-gray-600">Total Points</span>
-            <span className="font-mono text-base font-semibold text-gray-900">
-              {user.total_points.toLocaleString()}
-            </span>
-          </div>
-          <div className="flex items-center justify-between rounded-lg bg-blue-50 px-4 py-3">
-            <span className="text-sm text-blue-700">Available</span>
-            <span className="font-mono text-base font-semibold text-blue-700">
-              {user.available_points.toLocaleString()}
-            </span>
-          </div>
-          {locked > 0 && (
-            <div className="flex items-center justify-between rounded-lg bg-yellow-50 px-4 py-3">
-              <span className="text-sm text-yellow-700">Locked in orders</span>
-              <span className="font-mono text-base font-semibold text-yellow-700">
-                {locked.toLocaleString()}
+        {/* 내역 */}
+        <div className="divide-y">
+          {/* 보유 현금 */}
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">보유 현금</span>
+              <span className="font-mono font-semibold text-gray-900">
+                {me.total_points.toLocaleString()}
               </span>
             </div>
-          )}
+
+            <div className="mt-2 ml-4 space-y-1.5">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500 flex items-center gap-1">
+                  <span className="text-gray-400">├</span> 사용 가능
+                </span>
+                <span className="font-mono text-gray-700">
+                  {me.available_points.toLocaleString()}
+                </span>
+              </div>
+              {locked > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400 flex items-center gap-1">
+                    <span className="text-gray-300">└</span> 주문 잠김
+                  </span>
+                  <span className="font-mono text-gray-400">
+                    {locked.toLocaleString()}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 포지션 평가액 */}
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-medium text-blue-700">포지션 평가액</span>
+                <p className="text-xs text-gray-400 mt-0.5">OPEN 마켓 기준 시장가</p>
+              </div>
+              <span className="font-mono font-semibold text-blue-700">
+                {portfolioValue.toLocaleString()}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
