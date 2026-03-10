@@ -51,6 +51,17 @@ export interface UserPosition {
   avg_price: number
 }
 
+export interface Trade {
+  id: number
+  market_id: number
+  maker_order_id: number
+  taker_order_id: number
+  position: Position
+  price: number
+  quantity: number
+  created_at: string
+}
+
 export interface User {
   id: number
   username: string

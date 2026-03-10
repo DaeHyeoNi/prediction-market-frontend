@@ -24,8 +24,11 @@ export default function Navbar() {
             <>
               {user ? (
                 <>
-                  <Link href="/profile" className="text-sm text-gray-600 hover:text-gray-900">
-                    Profile
+                  <Link href="/positions" className="text-sm text-gray-600 hover:text-gray-900">
+                    Positions
+                  </Link>
+                  <Link href="/me" className="text-sm text-gray-600 hover:text-gray-900">
+                    Me
                   </Link>
                   {isAdmin && (
                     <Link href="/admin" className="text-sm text-gray-600 hover:text-gray-900">

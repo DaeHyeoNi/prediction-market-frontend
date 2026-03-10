@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useMarket, useOrderbook } from '@/lib/hooks/useMarket'
+import { useMarket, useOrderbook, useTrades } from '@/lib/hooks/useMarket'
 import { useOrders } from '@/lib/hooks/useOrders'
 import { usePositions } from '@/lib/hooks/usePositions'
 import { useAuth } from '@/context/AuthContext'
@@ -11,6 +11,7 @@ import OrderForm from '@/components/orders/OrderForm'
 import OrderList from '@/components/orders/OrderList'
 import PositionList from '@/components/positions/PositionList'
 import MarketStatusBadge from '@/components/markets/MarketStatusBadge'
+import TradeList from '@/components/trades/TradeList'
 import Spinner from '@/components/ui/Spinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { formatDate } from '@/lib/utils/format'
@@ -27,6 +28,7 @@ export default function MarketDetailPage() {
   const { data: orderbook } = useOrderbook(marketId)
   const { data: orders } = useOrders()
   const { data: positions } = usePositions()
+  const { data: trades } = useTrades(marketId)
 
   if (isLoading) {
     return (
@@ -105,6 +107,12 @@ export default function MarketDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Recent Trades */}
+      <div className="mt-4 rounded-lg border bg-white p-4">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">Recent Trades</h3>
+        <TradeList trades={trades || []} />
+      </div>
     </div>
   )
 }
