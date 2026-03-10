@@ -21,14 +21,10 @@ export interface OrderbookEntry {
   quantity: number
 }
 
-export interface OrderbookSide {
-  bids: OrderbookEntry[]
-  asks: OrderbookEntry[]
-}
-
 export interface Orderbook {
-  YES: OrderbookSide
-  NO: OrderbookSide
+  market_id: number
+  yes_bids: OrderbookEntry[]
+  yes_asks: OrderbookEntry[]
 }
 
 export interface Order {
