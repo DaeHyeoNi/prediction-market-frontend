@@ -1,5 +1,5 @@
 import { Trade } from '@/lib/types/api'
-import { formatDate, formatRelativeDate } from '@/lib/utils/format'
+import { formatDate, formatCompactRelative } from '@/lib/utils/format'
 import { cn } from '@/lib/utils/cn'
 
 export default function TradeList({ trades }: { trades: Trade[] }) {
@@ -38,7 +38,7 @@ export default function TradeList({ trades }: { trades: Trade[] }) {
                 </td>
                 <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-300">{t.quantity}</td>
                 <td className="py-1.5 text-xs text-gray-400 dark:text-gray-500" title={formatDate(t.created_at)}>
-                  {formatRelativeDate(t.created_at)}
+                  {formatCompactRelative(t.created_at)}
                 </td>
               </tr>
             )

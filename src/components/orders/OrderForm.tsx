@@ -72,6 +72,11 @@ export default function OrderForm({
   const noBestAsk = yesBestBid !== null ? 100 - yesBestBid : null
   const bestBid = selectedPosition === 'YES' ? yesBestBid : noBestBid
   const bestAsk = selectedPosition === 'YES' ? yesBestAsk : noBestAsk
+  const midPrice = bestBid !== null && bestAsk !== null
+    ? Math.round((bestBid + bestAsk) / 2)
+    : bestBid !== null ? bestBid
+    : bestAsk !== null ? bestAsk
+    : 50
 
   const onSubmit = (data: FormValues) => {
     setPendingOrder(data)
@@ -203,10 +208,10 @@ export default function OrderForm({
               )}
               <button
                 type="button"
-                onClick={() => setValue('price', 50, { shouldValidate: true })}
+                onClick={() => setValue('price', midPrice, { shouldValidate: true })}
                 className="rounded px-2 py-0.5 text-xs font-medium bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                Mid 50
+                Mid {midPrice}
               </button>
             </div>
           )}

@@ -97,7 +97,7 @@ export default function MarketDetailPage() {
             <div className="flex-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 px-4 py-3">
               <p className="text-xs text-green-600 dark:text-green-500 mb-1 font-medium">YES</p>
               <p className="text-2xl font-bold font-mono text-green-700 dark:text-green-400">
-                {yesMid ?? '—'}
+                {yesMid !== null ? `${yesMid}¢` : '—'}
               </p>
               {yesBestBid !== null && yesBestAsk !== null && (
                 <p className="text-xs text-green-600/70 dark:text-green-600 mt-0.5">{yesBestBid} / {yesBestAsk}</p>
@@ -106,7 +106,7 @@ export default function MarketDetailPage() {
             <div className="flex-1 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 px-4 py-3">
               <p className="text-xs text-red-500 dark:text-red-400 mb-1 font-medium">NO</p>
               <p className="text-2xl font-bold font-mono text-red-600 dark:text-red-400">
-                {noMid ?? '—'}
+                {noMid !== null ? `${noMid}¢` : '—'}
               </p>
               {yesBestBid !== null && yesBestAsk !== null && (
                 <p className="text-xs text-red-500/70 dark:text-red-600 mt-0.5">{100 - yesBestAsk} / {100 - yesBestBid}</p>
@@ -115,8 +115,17 @@ export default function MarketDetailPage() {
             {lastPrice !== null && (
               <div className="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3">
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Last</p>
-                <p className="text-2xl font-bold font-mono text-gray-700 dark:text-gray-200">{lastPrice}</p>
+                <p className="text-2xl font-bold font-mono text-gray-700 dark:text-gray-200">{lastPrice}¢</p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">YES</p>
+              </div>
+            )}
+            {trades && trades.length > 0 && (
+              <div className="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Volume</p>
+                <p className="text-lg font-bold font-mono text-gray-700 dark:text-gray-200">
+                  {trades.reduce((s, t) => s + t.quantity, 0).toLocaleString()}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{trades.length} trades</p>
               </div>
             )}
           </div>
