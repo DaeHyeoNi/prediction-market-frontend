@@ -21,9 +21,12 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('token')
-      document.cookie = 'token=; path=/; max-age=0'
-      window.location.href = '/auth/login'
+      const isAuthPage = window.location.pathname.startsWith('/auth/')
+      if (!isAuthPage) {
+        localStorage.removeItem('token')
+        document.cookie = 'token=; path=/; max-age=0'
+        window.location.href = '/auth/login'
+      }
     }
     return Promise.reject(error)
   }
