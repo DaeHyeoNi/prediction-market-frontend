@@ -12,7 +12,7 @@ import { useAuth } from '@/context/AuthContext'
 import { MarketStatus } from '@/lib/types/api'
 
 type FilterOption = MarketStatus | 'All'
-type SortOption = 'default' | 'closes_soon' | 'newest'
+type SortOption = 'default' | 'closes_soon' | 'newest' | 'active'
 
 export default function HomePage() {
   const [filter, setFilter] = useState<FilterOption>('All')
@@ -31,6 +31,11 @@ export default function HomePage() {
         .sort((a, b) => {
           if (sort === 'closes_soon') return new Date(a.closes_at).getTime() - new Date(b.closes_at).getTime()
           if (sort === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          if (sort === 'active') {
+            const aHas = a.last_trade_price != null ? 1 : 0
+            const bHas = b.last_trade_price != null ? 1 : 0
+            return bHas - aHas
+          }
           return 0
         })
     : []
@@ -65,6 +70,7 @@ export default function HomePage() {
             className="h-8 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="default">Sort: Default</option>
+            <option value="active">Most Active</option>
             <option value="closes_soon">Closes Soon</option>
             <option value="newest">Newest</option>
           </select>
