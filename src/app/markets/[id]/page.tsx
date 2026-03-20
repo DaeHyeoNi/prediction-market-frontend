@@ -131,8 +131,11 @@ export default function MarketDetailPage() {
         {orderbook ? (
           <Orderbook orderbook={orderbook} selectedPosition={selectedPosition} />
         ) : (
-          <div className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-8">
-            <Spinner />
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 animate-pulse">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-4"></div>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-6 bg-gray-100 dark:bg-gray-800 rounded mb-1"></div>
+            ))}
           </div>
         )}
 

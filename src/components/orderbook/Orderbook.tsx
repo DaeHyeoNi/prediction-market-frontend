@@ -25,9 +25,18 @@ export default function Orderbook({ orderbook, selectedPosition }: OrderbookProp
 
   return (
     <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        Orderbook — {selectedPosition}
-      </h3>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          Orderbook — {selectedPosition}
+        </h3>
+        <span className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+          </span>
+          Live
+        </span>
+      </div>
       <OrderbookSide label={selectedPosition} bids={bids} asks={asks} />
     </div>
   )

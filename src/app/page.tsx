@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useMarkets } from '@/lib/hooks/useMarkets'
 import MarketCard from '@/components/markets/MarketCard'
+import MarketCardSkeleton from '@/components/markets/MarketCardSkeleton'
 import MarketFilter from '@/components/markets/MarketFilter'
-import Spinner from '@/components/ui/Spinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { MarketStatus } from '@/lib/types/api'
 
@@ -49,12 +49,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {isLoading && (
-        <div className="flex justify-center py-12">
-          <Spinner size="lg" />
-        </div>
-      )}
-
       {error && (
         <ErrorMessage message="Failed to load markets. Is the backend running?" />
       )}
@@ -66,9 +60,12 @@ export default function HomePage() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((market) => (
-          <MarketCard key={market.id} market={market} />
-        ))}
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, i) => <MarketCardSkeleton key={i} />)
+          : filtered.map((market) => (
+              <MarketCard key={market.id} market={market} />
+            ))
+        }
       </div>
     </div>
   )

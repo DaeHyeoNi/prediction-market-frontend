@@ -6,5 +6,6 @@ export function useOrders() {
   return useQuery({
     queryKey: queryKeys.orders,
     queryFn: getMyOrders,
+    refetchInterval: 5000,
   })
 }

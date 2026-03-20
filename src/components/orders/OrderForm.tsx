@@ -159,14 +159,27 @@ export default function OrderForm({
 
         {/* Price */}
         <div>
-          <Input
-            label={`${selectedPosition} Price`}
-            type="number"
-            min={1}
-            max={99}
-            {...register('price', { valueAsNumber: true })}
-            error={errors.price?.message}
-          />
+          <p className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">{selectedPosition} Price</p>
+          <div className="flex items-stretch gap-1">
+            <button
+              type="button"
+              onClick={() => { const v = Number(price); if (v > 1) setValue('price', v - 1, { shouldValidate: true }) }}
+              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold text-sm transition-colors select-none"
+            >−</button>
+            <input
+              type="number"
+              min={1}
+              max={99}
+              {...register('price', { valueAsNumber: true })}
+              className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-center text-sm font-mono font-medium outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
+            />
+            <button
+              type="button"
+              onClick={() => { const v = Number(price); if (v < 99) setValue('price', v + 1, { shouldValidate: true }) }}
+              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold text-sm transition-colors select-none"
+            >+</button>
+          </div>
+          {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price.message}</p>}
           {/* Quick price buttons */}
           {(bestBid !== null || bestAsk !== null) && (
             <div className="mt-1.5 flex gap-1.5 flex-wrap">
@@ -203,14 +216,33 @@ export default function OrderForm({
         </div>
 
         {/* Quantity */}
-        <Input
-          label="Quantity"
-          type="number"
-          min={1}
-          max={orderType === 'Ask' ? heldQuantity : undefined}
-          {...register('quantity', { valueAsNumber: true })}
-          error={errors.quantity?.message}
-        />
+        <div>
+          <p className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</p>
+          <div className="flex items-stretch gap-1">
+            <button
+              type="button"
+              onClick={() => { const v = Number(quantity); if (v > 1) setValue('quantity', v - 1, { shouldValidate: true }) }}
+              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold text-sm transition-colors select-none"
+            >−</button>
+            <input
+              type="number"
+              min={1}
+              max={orderType === 'Ask' ? heldQuantity : undefined}
+              {...register('quantity', { valueAsNumber: true })}
+              className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-center text-sm font-mono font-medium outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const v = Number(quantity)
+                const max = orderType === 'Ask' ? heldQuantity : 9999
+                if (v < max) setValue('quantity', v + 1, { shouldValidate: true })
+              }}
+              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold text-sm transition-colors select-none"
+            >+</button>
+          </div>
+          {errors.quantity && <p className="mt-1 text-xs text-red-500">{errors.quantity.message}</p>}
+        </div>
 
         {/* Balance + Cost summary */}
         <div className="rounded bg-gray-50 dark:bg-gray-800 px-3 py-2 space-y-1.5 text-xs">
