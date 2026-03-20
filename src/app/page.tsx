@@ -7,6 +7,8 @@ import MarketCardSkeleton from '@/components/markets/MarketCardSkeleton'
 import MarketFilter from '@/components/markets/MarketFilter'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { useMarketPrices } from '@/lib/hooks/useMarketPrices'
+import { usePositions } from '@/lib/hooks/usePositions'
+import { useAuth } from '@/context/AuthContext'
 import { MarketStatus } from '@/lib/types/api'
 
 type FilterOption = MarketStatus | 'All'
@@ -16,8 +18,10 @@ export default function HomePage() {
   const [filter, setFilter] = useState<FilterOption>('All')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<SortOption>('default')
+  const { user } = useAuth()
   const { data: markets, isLoading, error } = useMarkets()
   const priceMap = useMarketPrices(markets)
+  const { data: positions } = usePositions(!!user)
 
   const filtered = markets
     ? markets
@@ -81,9 +85,10 @@ export default function HomePage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => <MarketCardSkeleton key={i} />)
-          : filtered.map((market) => (
-              <MarketCard key={market.id} market={market} bestYesBid={priceMap.get(market.id)} />
-            ))
+          : filtered.map((market) => {
+              const myPos = user ? positions?.find(p => p.market_id === market.id) : undefined
+              return <MarketCard key={market.id} market={market} bestYesBid={priceMap.get(market.id)} myPosition={myPos?.position} />
+            })
         }
       </div>
     </div>

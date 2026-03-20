@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { Market } from '@/lib/types/api'
+import { Market, Position } from '@/lib/types/api'
 import MarketStatusBadge from './MarketStatusBadge'
 import { formatDate, formatRelativeDate } from '@/lib/utils/format'
 
-export default function MarketCard({ market, bestYesBid }: { market: Market; bestYesBid?: number }) {
+export default function MarketCard({ market, bestYesBid, myPosition }: { market: Market; bestYesBid?: number; myPosition?: Position }) {
   const hasPrice = bestYesBid !== undefined
   const noPrice = hasPrice ? 100 - bestYesBid! : undefined
 
@@ -14,7 +14,14 @@ export default function MarketCard({ market, bestYesBid }: { market: Market; bes
     >
       <div className="mb-3 flex items-start justify-between gap-2">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 leading-snug line-clamp-2">{market.title}</h3>
-        <div className="shrink-0"><MarketStatusBadge status={market.status} /></div>
+        <div className="shrink-0 flex items-center gap-1.5">
+          {myPosition && (
+            <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${myPosition === 'YES' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'}`}>
+              {myPosition}
+            </span>
+          )}
+          <MarketStatusBadge status={market.status} />
+        </div>
       </div>
 
       {market.status === 'Resolved' && market.result ? (

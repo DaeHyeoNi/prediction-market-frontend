@@ -16,11 +16,25 @@ export default function OrderList({ orders, marketId }: OrderListProps) {
   const filtered = marketId ? orders.filter((o) => o.market_id === marketId) : orders
   const { mutate: cancel, isPending } = useCancelOrder()
 
+  const cancellable = filtered.filter((o) => CANCELLABLE.includes(o.status))
+
   if (filtered.length === 0) {
     return <p className="text-sm text-gray-500 dark:text-gray-400">No orders yet.</p>
   }
 
   return (
+    <div>
+      {cancellable.length > 1 && (
+        <div className="mb-2 flex justify-end">
+          <button
+            onClick={() => cancellable.forEach((o) => cancel(o.id))}
+            disabled={isPending}
+            className="rounded px-2.5 py-1 text-xs font-medium text-red-500 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-colors"
+          >
+            Cancel All ({cancellable.length})
+          </button>
+        </div>
+      )}
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
@@ -64,6 +78,7 @@ export default function OrderList({ orders, marketId }: OrderListProps) {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   )
 }
