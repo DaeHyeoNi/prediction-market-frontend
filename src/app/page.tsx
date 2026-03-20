@@ -43,7 +43,16 @@ export default function HomePage() {
   return (
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold dark:text-gray-100">Markets</h1>
+        <div>
+          <h1 className="text-2xl font-bold dark:text-gray-100">Markets</h1>
+          {!isLoading && markets && (
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              {filtered.length !== markets.length
+                ? `${filtered.length} / ${markets.length}개 마켓`
+                : `${markets.length}개 마켓`}
+            </p>
+          )}
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <input

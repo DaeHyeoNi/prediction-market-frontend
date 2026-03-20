@@ -107,8 +107,7 @@ export default function OrdersPage() {
                   <th className="px-4 py-3">Side</th>
                   <th className="px-4 py-3">Type</th>
                   <th className="px-4 py-3">Price</th>
-                  <th className="px-4 py-3">Qty</th>
-                  <th className="px-4 py-3">Rem.</th>
+                  <th className="px-4 py-3">Fill</th>
                   <th className="px-4 py-3">Locked</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Date</th>
@@ -135,8 +134,23 @@ export default function OrdersPage() {
                         {order.order_type === 'Bid' ? 'Buy' : 'Sell'}
                       </td>
                       <td className="px-4 py-3 font-mono font-medium dark:text-gray-200">{order.price}</td>
-                      <td className="px-4 py-3 dark:text-gray-300">{order.quantity}</td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{order.remaining_quantity}</td>
+                      <td className="px-4 py-3">
+                        {(() => {
+                          const filled = order.quantity - order.remaining_quantity
+                          const pct = order.quantity > 0 ? Math.round((filled / order.quantity) * 100) : 0
+                          return (
+                            <div className="min-w-[80px]">
+                              <div className="flex justify-between text-xs mb-0.5">
+                                <span className="font-mono dark:text-gray-200">{filled}/{order.quantity}</span>
+                                {pct > 0 && <span className="text-gray-400 dark:text-gray-500">{pct}%</span>}
+                              </div>
+                              <div className="h-1 w-full rounded-full bg-gray-100 dark:bg-gray-700">
+                                <div className="h-full rounded-full bg-blue-500 dark:bg-blue-400 transition-all" style={{ width: `${pct}%` }} />
+                              </div>
+                            </div>
+                          )
+                        })()}
+                      </td>
                       <td className="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">{order.locked_points?.toLocaleString()}</td>
                       <td className="px-4 py-3">
                         <OrderStatusBadge status={order.status} />
