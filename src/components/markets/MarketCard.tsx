@@ -4,8 +4,8 @@ import MarketStatusBadge from './MarketStatusBadge'
 import { formatDate, formatRelativeDate } from '@/lib/utils/format'
 
 export default function MarketCard({ market, bestYesBid }: { market: Market; bestYesBid?: number }) {
-  const yesPrice = bestYesBid ?? 50
-  const noPrice = 100 - yesPrice
+  const hasPrice = bestYesBid !== undefined
+  const noPrice = hasPrice ? 100 - bestYesBid! : undefined
 
   return (
     <Link
@@ -27,11 +27,15 @@ export default function MarketCard({ market, bestYesBid }: { market: Market; bes
         <div className="mb-3 flex gap-2">
           <div className="flex-1 rounded bg-green-50 dark:bg-green-900/20 px-3 py-2 text-center">
             <p className="text-xs text-green-600 dark:text-green-500 mb-0.5">YES</p>
-            <p className="font-mono font-bold text-green-700 dark:text-green-400">{yesPrice}</p>
+            <p className="font-mono font-bold text-green-700 dark:text-green-400">
+              {hasPrice ? bestYesBid : <span className="text-gray-400 dark:text-gray-600">—</span>}
+            </p>
           </div>
           <div className="flex-1 rounded bg-red-50 dark:bg-red-900/20 px-3 py-2 text-center">
             <p className="text-xs text-red-500 dark:text-red-400 mb-0.5">NO</p>
-            <p className="font-mono font-bold text-red-600 dark:text-red-400">{noPrice}</p>
+            <p className="font-mono font-bold text-red-600 dark:text-red-400">
+              {hasPrice ? noPrice : <span className="text-gray-400 dark:text-gray-600">—</span>}
+            </p>
           </div>
         </div>
       ) : null}

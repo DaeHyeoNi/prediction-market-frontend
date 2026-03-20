@@ -6,6 +6,7 @@ import MarketCard from '@/components/markets/MarketCard'
 import MarketCardSkeleton from '@/components/markets/MarketCardSkeleton'
 import MarketFilter from '@/components/markets/MarketFilter'
 import ErrorMessage from '@/components/ui/ErrorMessage'
+import { useMarketPrices } from '@/lib/hooks/useMarketPrices'
 import { MarketStatus } from '@/lib/types/api'
 
 type FilterOption = MarketStatus | 'All'
@@ -16,6 +17,7 @@ export default function HomePage() {
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<SortOption>('default')
   const { data: markets, isLoading, error } = useMarkets()
+  const priceMap = useMarketPrices(markets)
 
   const filtered = markets
     ? markets
@@ -80,7 +82,7 @@ export default function HomePage() {
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => <MarketCardSkeleton key={i} />)
           : filtered.map((market) => (
-              <MarketCard key={market.id} market={market} />
+              <MarketCard key={market.id} market={market} bestYesBid={priceMap.get(market.id)} />
             ))
         }
       </div>
