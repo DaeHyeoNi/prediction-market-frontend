@@ -17,6 +17,7 @@ import ErrorMessage from '@/components/ui/ErrorMessage'
 import { formatDate } from '@/lib/utils/format'
 import { Position } from '@/lib/types/api'
 import PriceSparkline from '@/components/markets/PriceSparkline'
+import Link from 'next/link'
 
 export default function MarketDetailPage() {
   const params = useParams()
@@ -62,6 +63,16 @@ export default function MarketDetailPage() {
 
   return (
     <div>
+      {/* Back nav */}
+      <div className="mb-4">
+        <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Markets
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="mb-6 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
         <div className="flex items-start justify-between gap-4 mb-4">

@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Position, OrderType, Orderbook } from '@/lib/types/api'
 import { usePlaceOrder } from '@/lib/hooks/usePlaceOrder'
+import { useMe } from '@/lib/hooks/useMe'
+import { useAuth } from '@/context/AuthContext'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { cn } from '@/lib/utils/cn'
@@ -37,6 +39,9 @@ export default function OrderForm({
 }: OrderFormProps) {
   const { mutate: placeOrder, isPending } = usePlaceOrder(marketId)
   const [pendingOrder, setPendingOrder] = useState<FormValues | null>(null)
+  const { user: authUser } = useAuth()
+  const { data: meData } = useMe()
+  const availablePoints = meData?.available_points ?? authUser?.available_points ?? 0
 
   const {
     register,
@@ -207,17 +212,32 @@ export default function OrderForm({
           error={errors.quantity?.message}
         />
 
-        {/* Cost estimate */}
-        {!isNaN(estimatedCost) && estimatedCost > 0 && (
-          <div className="rounded bg-gray-50 dark:bg-gray-800 px-3 py-2 text-xs text-gray-500 dark:text-gray-400 flex justify-between">
-            <span>Est. {orderType === 'Bid' ? 'cost' : 'proceeds'}</span>
+        {/* Balance + Cost summary */}
+        <div className="rounded bg-gray-50 dark:bg-gray-800 px-3 py-2 space-y-1.5 text-xs">
+          <div className="flex justify-between text-gray-500 dark:text-gray-400">
+            <span>Available balance</span>
             <span className="font-mono font-medium text-gray-700 dark:text-gray-300">
-              {estimatedCost.toLocaleString()} pts
+              {availablePoints.toLocaleString()} pts
             </span>
           </div>
-        )}
+          {!isNaN(estimatedCost) && estimatedCost > 0 && (
+            <div className="flex justify-between text-gray-500 dark:text-gray-400">
+              <span>Est. {orderType === 'Bid' ? 'cost' : 'proceeds'}</span>
+              <span className={`font-mono font-medium ${orderType === 'Bid' && estimatedCost > availablePoints ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}>
+                {estimatedCost.toLocaleString()} pts
+              </span>
+            </div>
+          )}
+          {orderType === 'Bid' && !isNaN(estimatedCost) && estimatedCost > availablePoints && (
+            <p className="text-red-500 dark:text-red-400 font-medium">Insufficient balance</p>
+          )}
+        </div>
 
-        <Button type="submit" isLoading={isPending} disabled={disabled} className="w-full">
+        <Button
+          type="submit"
+          isLoading={isPending}
+          disabled={disabled || (orderType === 'Bid' && !isNaN(estimatedCost) && estimatedCost > availablePoints)}
+          className="w-full">
           {isPending
             ? 'Processing...'
             : `${orderType === 'Bid' ? 'Buy' : 'Sell'} ${selectedPosition}`}

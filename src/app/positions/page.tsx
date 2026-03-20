@@ -45,11 +45,21 @@ export default function PositionsPage() {
     const totalCost = pos.quantity * pos.avg_price
     const isResolved = market?.status === 'Resolved'
     const isWinner = isResolved && market?.result === pos.position
+    const isLoser = isResolved && market?.result !== null && market?.result !== pos.position
+    // 해결된 경우 PnL 계산: 승리시 (100 - avg_price) * qty, 패배시 -avg_price * qty
+    const resolvedPnl = isResolved
+      ? isWinner
+        ? (100 - pos.avg_price) * pos.quantity
+        : -pos.avg_price * pos.quantity
+      : null
 
     return (
       <Link
         href={`/markets/${pos.market_id}`}
-        className="block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 transition hover:shadow-md dark:hover:border-gray-600"
+        className={cn(
+          'block rounded-lg border bg-white dark:bg-gray-900 p-4 transition hover:shadow-md',
+          isWinner ? 'border-green-300 dark:border-green-800' : isLoser ? 'border-red-200 dark:border-red-900' : 'border-gray-200 dark:border-gray-700 dark:hover:border-gray-600'
+        )}
       >
         <div className="mb-2 flex items-start justify-between gap-2">
           <p className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">
@@ -58,7 +68,7 @@ export default function PositionsPage() {
           {isResolved && (
             <span className={cn(
               'shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold',
-              isWinner ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+              isWinner ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
             )}>
               {isWinner ? 'Won' : 'Lost'}
             </span>
@@ -74,12 +84,21 @@ export default function PositionsPage() {
           <span className="font-mono text-sm text-gray-700 dark:text-gray-300">{pos.quantity} shares</span>
         </div>
         <div className="mt-2 flex justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>Avg: {pos.avg_price}</span>
-          <span>Cost: {totalCost.toLocaleString()}</span>
+          <span>Avg: <span className="font-mono">{pos.avg_price}</span></span>
+          <span>Cost: <span className="font-mono">{totalCost.toLocaleString()}</span></span>
         </div>
-        {isResolved && isWinner && (
-          <div className="mt-2 text-xs font-medium text-green-600 dark:text-green-400">
-            Payout: {(pos.quantity * 100).toLocaleString()}
+        {resolvedPnl !== null && (
+          <div className={cn(
+            'mt-2 flex items-center justify-between text-xs font-semibold',
+            resolvedPnl >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'
+          )}>
+            <span>P&L</span>
+            <span className="font-mono">{resolvedPnl >= 0 ? '+' : ''}{resolvedPnl.toLocaleString()} pts</span>
+          </div>
+        )}
+        {!isResolved && (
+          <div className="mt-2 text-xs text-gray-400 dark:text-gray-500">
+            Payout if wins: <span className="font-mono">{(pos.quantity * 100).toLocaleString()}</span>
           </div>
         )}
       </Link>

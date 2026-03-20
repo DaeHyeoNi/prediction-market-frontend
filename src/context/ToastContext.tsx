@@ -33,18 +33,23 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs">
         {toasts.map((toast) => (
           <div
             key={toast.id}
             className={cn(
-              'rounded px-4 py-3 text-sm text-white shadow-lg transition-all',
-              toast.type === 'success' && 'bg-green-600',
-              toast.type === 'error' && 'bg-red-600',
-              toast.type === 'info' && 'bg-blue-600'
+              'rounded-lg px-4 py-3 text-sm text-white shadow-xl transition-all border',
+              toast.type === 'success' && 'bg-green-600 border-green-500',
+              toast.type === 'error' && 'bg-red-600 border-red-500',
+              toast.type === 'info' && 'bg-gray-800 border-gray-600 text-gray-100'
             )}
           >
-            {toast.message}
+            <div className="flex items-start gap-2">
+              {toast.type === 'success' && <span className="text-base leading-none mt-0.5">✓</span>}
+              {toast.type === 'error' && <span className="text-base leading-none mt-0.5">✕</span>}
+              {toast.type === 'info' && <span className="text-base leading-none mt-0.5">●</span>}
+              <span>{toast.message}</span>
+            </div>
           </div>
         ))}
       </div>

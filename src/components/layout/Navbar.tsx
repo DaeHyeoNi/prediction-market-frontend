@@ -29,6 +29,9 @@ export default function Navbar() {
                   <Link href="/positions" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
                     Positions
                   </Link>
+                  <Link href="/orders" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+                    Orders
+                  </Link>
                   <Link href="/me" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
                     Portfolio
                   </Link>
