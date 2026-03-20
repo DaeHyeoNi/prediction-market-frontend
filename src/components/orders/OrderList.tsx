@@ -42,8 +42,7 @@ export default function OrderList({ orders, marketId }: OrderListProps) {
             <th className="pb-2 pr-4">Position</th>
             <th className="pb-2 pr-4">Type</th>
             <th className="pb-2 pr-4">Price</th>
-            <th className="pb-2 pr-4">Qty</th>
-            <th className="pb-2 pr-4">Rem.</th>
+            <th className="pb-2 pr-4">Fill</th>
             <th className="pb-2 pr-4">Status</th>
             <th className="pb-2 pr-4">Date</th>
             <th className="pb-2"></th>
@@ -57,8 +56,26 @@ export default function OrderList({ orders, marketId }: OrderListProps) {
               </td>
               <td className="py-2 pr-4 text-gray-600 dark:text-gray-400">{order.order_type === 'Bid' ? 'Buy' : 'Sell'}</td>
               <td className="py-2 pr-4 font-mono font-medium dark:text-gray-200">{order.price}</td>
-              <td className="py-2 pr-4 dark:text-gray-200">{order.quantity}</td>
-              <td className="py-2 pr-4 text-gray-500 dark:text-gray-400">{order.remaining_quantity}</td>
+              <td className="py-2 pr-4">
+                {(() => {
+                  const filled = order.quantity - order.remaining_quantity
+                  const pct = order.quantity > 0 ? Math.round((filled / order.quantity) * 100) : 0
+                  return (
+                    <div className="min-w-[72px]">
+                      <div className="flex justify-between text-xs mb-0.5">
+                        <span className="font-mono dark:text-gray-200">{filled}/{order.quantity}</span>
+                        {pct > 0 && <span className="text-gray-400 dark:text-gray-500">{pct}%</span>}
+                      </div>
+                      <div className="h-1 w-full rounded-full bg-gray-100 dark:bg-gray-700">
+                        <div
+                          className="h-full rounded-full bg-blue-500 dark:bg-blue-400 transition-all"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })()}
+              </td>
               <td className="py-2 pr-4">
                 <OrderStatusBadge status={order.status} />
               </td>

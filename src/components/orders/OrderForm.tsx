@@ -63,6 +63,7 @@ export default function OrderForm({
   const quantity = watch('quantity')
   const companionPrice = price ? 100 - Number(price) : 50
   const estimatedCost = Number(price) * Number(quantity)
+  const exceedsSellable = orderType === 'Ask' && Number(quantity) > heldQuantity
 
   // Best bid/ask from orderbook for quick price buttons
   const yesBook = orderbook
@@ -303,12 +304,17 @@ export default function OrderForm({
           {orderType === 'Bid' && !isNaN(estimatedCost) && estimatedCost > availablePoints && (
             <p className="text-red-500 dark:text-red-400 font-medium">Insufficient balance</p>
           )}
+          {exceedsSellable && (
+            <p className="text-red-500 dark:text-red-400 font-medium">
+              매도 가능 수량 초과 ({heldQuantity}주)
+            </p>
+          )}
         </div>
 
         <Button
           type="submit"
           isLoading={isPending}
-          disabled={disabled || (orderType === 'Bid' && !isNaN(estimatedCost) && estimatedCost > availablePoints)}
+          disabled={disabled || exceedsSellable || (orderType === 'Bid' && !isNaN(estimatedCost) && estimatedCost > availablePoints)}
           className="w-full">
           {isPending
             ? 'Processing...'
