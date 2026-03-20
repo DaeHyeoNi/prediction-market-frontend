@@ -242,6 +242,41 @@ export default function OrderForm({
             >+</button>
           </div>
           {errors.quantity && <p className="mt-1 text-xs text-red-500">{errors.quantity.message}</p>}
+          {/* Quick quantity fill */}
+          {orderType === 'Bid' && availablePoints > 0 && Number(price) > 0 && (
+            <div className="mt-1.5 flex gap-1.5">
+              {[['25%', 0.25], ['50%', 0.5], ['Max', 1]] .map(([label, pct]) => {
+                const qty = Math.max(1, Math.floor((availablePoints * Number(pct)) / Number(price)))
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setValue('quantity', qty, { shouldValidate: true })}
+                    className="flex-1 rounded px-1.5 py-0.5 text-xs font-medium bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+          {orderType === 'Ask' && heldQuantity > 0 && (
+            <div className="mt-1.5 flex gap-1.5">
+              {[['25%', 0.25], ['50%', 0.5], ['Max', 1]] .map(([label, pct]) => {
+                const qty = Math.max(1, Math.floor(heldQuantity * Number(pct)))
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setValue('quantity', qty, { shouldValidate: true })}
+                    className="flex-1 rounded px-1.5 py-0.5 text-xs font-medium bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors"
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         {/* Balance + Cost summary */}

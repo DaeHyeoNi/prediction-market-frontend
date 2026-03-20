@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Market } from '@/lib/types/api'
 import MarketStatusBadge from './MarketStatusBadge'
-import { formatDate } from '@/lib/utils/format'
+import { formatDate, formatRelativeDate } from '@/lib/utils/format'
 
 export default function MarketCard({ market, bestYesBid }: { market: Market; bestYesBid?: number }) {
   const yesPrice = bestYesBid ?? 50
@@ -36,8 +36,15 @@ export default function MarketCard({ market, bestYesBid }: { market: Market; bes
         </div>
       ) : null}
 
-      <div className="text-xs text-gray-400 dark:text-gray-500">
-        {market.status === 'Resolved' ? `Resolved: ${formatDate(market.resolved_at ?? market.closes_at)}` : `Closes: ${formatDate(market.closes_at)}`}
+      <div className="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-between">
+        {market.status === 'Resolved' ? (
+          <span>Resolved {formatRelativeDate(market.resolved_at ?? market.closes_at)}</span>
+        ) : (
+          <>
+            <span>Closes {formatRelativeDate(market.closes_at)}</span>
+            <span className="text-gray-300 dark:text-gray-600">{formatDate(market.closes_at).split(' ')[0]}</span>
+          </>
+        )}
       </div>
     </Link>
   )

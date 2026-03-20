@@ -14,7 +14,7 @@ import MarketStatusBadge from '@/components/markets/MarketStatusBadge'
 import TradeList from '@/components/trades/TradeList'
 import Spinner from '@/components/ui/Spinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
-import { formatDate } from '@/lib/utils/format'
+import { formatDate, formatRelativeDate } from '@/lib/utils/format'
 import { Position } from '@/lib/types/api'
 import PriceSparkline from '@/components/markets/PriceSparkline'
 import Link from 'next/link'
@@ -83,8 +83,8 @@ export default function MarketDetailPage() {
             )}
             <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
               {market.status === 'Resolved'
-                ? `Resolved ${formatDate(market.resolved_at ?? market.closes_at)}`
-                : `Closes ${formatDate(market.closes_at)}`}
+                ? `Resolved ${formatRelativeDate(market.resolved_at ?? market.closes_at)}`
+                : `Closes ${formatRelativeDate(market.closes_at)} · ${formatDate(market.closes_at)}`}
             </p>
           </div>
           <MarketStatusBadge status={market.status} />

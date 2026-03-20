@@ -9,30 +9,38 @@ import ErrorMessage from '@/components/ui/ErrorMessage'
 import { MarketStatus } from '@/lib/types/api'
 
 type FilterOption = MarketStatus | 'All'
+type SortOption = 'default' | 'closes_soon' | 'newest'
 
 export default function HomePage() {
   const [filter, setFilter] = useState<FilterOption>('All')
   const [search, setSearch] = useState('')
+  const [sort, setSort] = useState<SortOption>('default')
   const { data: markets, isLoading, error } = useMarkets()
 
   const filtered = markets
     ? markets
         .filter((m) => filter === 'All' || m.status === filter)
         .filter((m) => !search || m.title.toLowerCase().includes(search.toLowerCase()))
+        .slice()
+        .sort((a, b) => {
+          if (sort === 'closes_soon') return new Date(a.closes_at).getTime() - new Date(b.closes_at).getTime()
+          if (sort === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          return 0
+        })
     : []
 
   return (
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold dark:text-gray-100">Markets</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <input
               type="text"
               placeholder="Search markets..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-8 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 pr-8 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+              className="h-8 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 pr-8 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
             />
             {search && (
               <button
@@ -45,6 +53,15 @@ export default function HomePage() {
               </button>
             )}
           </div>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortOption)}
+            className="h-8 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="default">Sort: Default</option>
+            <option value="closes_soon">Closes Soon</option>
+            <option value="newest">Newest</option>
+          </select>
           <MarketFilter value={filter} onChange={setFilter} />
         </div>
       </div>
