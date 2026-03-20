@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -27,6 +27,8 @@ interface OrderFormProps {
   onPositionChange: (p: Position) => void
   heldQuantity: number
   orderbook?: Orderbook
+  externalPrice?: number
+  onExternalPriceConsumed?: () => void
 }
 
 export default function OrderForm({
@@ -36,6 +38,8 @@ export default function OrderForm({
   onPositionChange,
   heldQuantity,
   orderbook,
+  externalPrice,
+  onExternalPriceConsumed,
 }: OrderFormProps) {
   const { mutate: placeOrder, isPending } = usePlaceOrder(marketId)
   const [pendingOrder, setPendingOrder] = useState<FormValues | null>(null)
@@ -78,6 +82,14 @@ export default function OrderForm({
     : bestBid !== null ? bestBid
     : bestAsk !== null ? bestAsk
     : 50
+
+  // 오더북 가격 클릭 → 가격 자동 입력
+  useEffect(() => {
+    if (externalPrice !== undefined) {
+      setValue('price', externalPrice, { shouldValidate: true })
+      onExternalPriceConsumed?.()
+    }
+  }, [externalPrice, setValue, onExternalPriceConsumed])
 
   const onSubmit = (data: FormValues) => {
     setPendingOrder(data)

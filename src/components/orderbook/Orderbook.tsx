@@ -4,13 +4,14 @@ import OrderbookSide from './OrderbookSide'
 interface OrderbookProps {
   orderbook: OrderbookType
   selectedPosition: Position
+  onPriceClick?: (price: number) => void
 }
 
 function mirrorEntries(entries: OrderbookEntry[]): OrderbookEntry[] {
   return entries.map((e) => ({ price: 100 - e.price, quantity: e.quantity }))
 }
 
-export default function Orderbook({ orderbook, selectedPosition }: OrderbookProps) {
+export default function Orderbook({ orderbook, selectedPosition, onPriceClick }: OrderbookProps) {
   let bids: OrderbookEntry[]
   let asks: OrderbookEntry[]
 
@@ -37,7 +38,10 @@ export default function Orderbook({ orderbook, selectedPosition }: OrderbookProp
           Live
         </span>
       </div>
-      <OrderbookSide label={selectedPosition} bids={bids} asks={asks} />
+      {onPriceClick && (
+        <p className="mb-2 text-xs text-gray-400 dark:text-gray-500 text-center">가격 클릭 → 주문 폼 자동 입력</p>
+      )}
+      <OrderbookSide label={selectedPosition} bids={bids} asks={asks} onPriceClick={onPriceClick} />
     </div>
   )
 }

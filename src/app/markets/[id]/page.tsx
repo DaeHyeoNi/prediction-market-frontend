@@ -25,6 +25,7 @@ export default function MarketDetailPage() {
   const { user } = useAuth()
 
   const [selectedPosition, setSelectedPosition] = useState<Position>('YES')
+  const [clickedPrice, setClickedPrice] = useState<number | undefined>(undefined)
   const [copied, setCopied] = useState(false)
   const copyUrl = useCallback(() => {
     navigator.clipboard.writeText(window.location.href)
@@ -192,7 +193,7 @@ export default function MarketDetailPage() {
       {/* Main grid */}
       <div className="grid gap-4 lg:grid-cols-2">
         {orderbook ? (
-          <Orderbook orderbook={orderbook} selectedPosition={selectedPosition} />
+          <Orderbook orderbook={orderbook} selectedPosition={selectedPosition} onPriceClick={user ? setClickedPrice : undefined} />
         ) : (
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 animate-pulse">
             <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-4"></div>
@@ -211,6 +212,8 @@ export default function MarketDetailPage() {
               onPositionChange={setSelectedPosition}
               heldQuantity={heldQuantity}
               orderbook={orderbook}
+              externalPrice={clickedPrice}
+              onExternalPriceConsumed={() => setClickedPrice(undefined)}
             />
           ) : (
             <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 text-center text-sm text-gray-500 dark:text-gray-400">

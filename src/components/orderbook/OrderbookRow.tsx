@@ -5,13 +5,20 @@ interface OrderbookRowProps {
   entry: OrderbookEntry
   side: 'bid' | 'ask'
   maxQty: number
+  onPriceClick?: (price: number) => void
 }
 
-export default function OrderbookRow({ entry, side, maxQty }: OrderbookRowProps) {
+export default function OrderbookRow({ entry, side, maxQty, onPriceClick }: OrderbookRowProps) {
   const pct = maxQty > 0 ? (entry.quantity / maxQty) * 100 : 0
 
   return (
-    <div className="relative flex items-center justify-between py-0.5 px-2 text-xs">
+    <div
+      className={cn(
+        'relative flex items-center justify-between py-0.5 px-2 text-xs',
+        onPriceClick && 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors'
+      )}
+      onClick={() => onPriceClick?.(entry.price)}
+    >
       <div
         className={cn(
           'absolute inset-0 opacity-15',

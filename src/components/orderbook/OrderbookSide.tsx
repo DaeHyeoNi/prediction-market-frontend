@@ -10,9 +10,10 @@ interface OrderbookSideProps {
   bids: OrderbookEntry[]
   asks: OrderbookEntry[]
   label: string
+  onPriceClick?: (price: number) => void
 }
 
-export default function OrderbookSide({ bids, asks, label }: OrderbookSideProps) {
+export default function OrderbookSide({ bids, asks, label, onPriceClick }: OrderbookSideProps) {
   const [expanded, setExpanded] = useState(false)
   // 큰 가격 → 작은 가격 (위 → 아래)
   const sortedAsks = [...asks].sort((a, b) => b.price - a.price)
@@ -45,7 +46,7 @@ export default function OrderbookSide({ bids, asks, label }: OrderbookSideProps)
           <p className="py-2 text-center text-xs text-gray-400 dark:text-gray-500">No asks</p>
         ) : (
           visibleAsks.map((entry, i) => (
-            <OrderbookRow key={i} entry={entry} side="ask" maxQty={maxQty} />
+            <OrderbookRow key={i} entry={entry} side="ask" maxQty={maxQty} onPriceClick={onPriceClick} />
           ))
         )}
       </div>
@@ -71,7 +72,7 @@ export default function OrderbookSide({ bids, asks, label }: OrderbookSideProps)
           <p className="py-2 text-center text-xs text-gray-400 dark:text-gray-500">No bids</p>
         ) : (
           visibleBids.map((entry, i) => (
-            <OrderbookRow key={i} entry={entry} side="bid" maxQty={maxQty} />
+            <OrderbookRow key={i} entry={entry} side="bid" maxQty={maxQty} onPriceClick={onPriceClick} />
           ))
         )}
       </div>
