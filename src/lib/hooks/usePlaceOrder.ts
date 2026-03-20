@@ -50,6 +50,7 @@ export function usePlaceOrder(marketId: number) {
         queryClient.invalidateQueries({ queryKey: queryKeys.orderbook(marketId) })
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })
         queryClient.invalidateQueries({ queryKey: queryKeys.positions })
+        queryClient.invalidateQueries({ queryKey: queryKeys.me })
       })
     },
     onError: (error: unknown) => {

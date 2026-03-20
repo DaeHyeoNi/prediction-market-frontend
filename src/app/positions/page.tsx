@@ -49,16 +49,16 @@ export default function PositionsPage() {
     return (
       <Link
         href={`/markets/${pos.market_id}`}
-        className="block rounded-lg border bg-white p-4 transition hover:shadow-md"
+        className="block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 transition hover:shadow-md dark:hover:border-gray-600"
       >
         <div className="mb-2 flex items-start justify-between gap-2">
-          <p className="text-sm font-medium text-gray-800 line-clamp-2">
+          <p className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">
             {market?.title ?? `Market #${pos.market_id}`}
           </p>
           {isResolved && (
             <span className={cn(
               'shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold',
-              isWinner ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+              isWinner ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
             )}>
               {isWinner ? 'Won' : 'Lost'}
             </span>
@@ -67,18 +67,18 @@ export default function PositionsPage() {
         <div className="flex items-center justify-between">
           <span className={cn(
             'rounded-full px-2.5 py-0.5 text-xs font-semibold',
-            pos.position === 'YES' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            pos.position === 'YES' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
           )}>
             {pos.position}
           </span>
-          <span className="font-mono text-sm text-gray-700">{pos.quantity} shares</span>
+          <span className="font-mono text-sm text-gray-700 dark:text-gray-300">{pos.quantity} shares</span>
         </div>
-        <div className="mt-2 flex justify-between text-xs text-gray-500">
+        <div className="mt-2 flex justify-between text-xs text-gray-500 dark:text-gray-400">
           <span>Avg: {pos.avg_price}</span>
           <span>Cost: {totalCost.toLocaleString()}</span>
         </div>
         {isResolved && isWinner && (
-          <div className="mt-2 text-xs font-medium text-green-600">
+          <div className="mt-2 text-xs font-medium text-green-600 dark:text-green-400">
             Payout: {(pos.quantity * 100).toLocaleString()}
           </div>
         )}
@@ -88,9 +88,9 @@ export default function PositionsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">My Positions</h1>
+      <h1 className="mb-6 text-2xl font-bold dark:text-gray-100">My Positions</h1>
 
-      <div className="mb-4 flex gap-1 border-b">
+      <div className="mb-4 flex gap-1 border-b dark:border-gray-700">
         {(['active', 'resolved'] as Tab[]).map((t) => {
           const count = t === 'active' ? activePositions.length : resolvedPositions.length
           return (
@@ -100,15 +100,15 @@ export default function PositionsPage() {
               className={cn(
                 'flex items-center gap-1.5 px-4 py-2 text-sm font-medium capitalize transition',
                 tab === t
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'border-b-2 border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               )}
             >
               {t === 'active' ? 'Active' : 'Resolved'}
               {count > 0 && (
                 <span className={cn(
                   'rounded-full px-1.5 py-0.5 text-xs',
-                  tab === t ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'
+                  tab === t ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
                 )}>
                   {count}
                 </span>
@@ -121,7 +121,7 @@ export default function PositionsPage() {
       {posLoading ? (
         <div className="flex justify-center py-8"><Spinner /></div>
       ) : displayed.length === 0 ? (
-        <p className="py-8 text-center text-gray-400">
+        <p className="py-8 text-center text-gray-400 dark:text-gray-500">
           {tab === 'active' ? 'No active positions.' : 'No resolved positions.'}
         </p>
       ) : (

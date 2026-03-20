@@ -19,10 +19,10 @@ export default function OrderbookRow({ entry, side, maxQty }: OrderbookRowProps)
         )}
         style={{ width: `${pct}%` }}
       />
-      <span className={cn('relative font-mono', side === 'bid' ? 'text-green-700' : 'text-red-700')}>
+      <span className={cn('relative font-mono', side === 'bid' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400')}>
         {entry.price}
       </span>
-      <span className="relative text-gray-700">{entry.quantity}</span>
+      <span className="relative text-gray-700 dark:text-gray-300">{entry.quantity}</span>
     </div>
   )
 }

@@ -24,8 +24,8 @@ export default function Orderbook({ orderbook, selectedPosition }: OrderbookProp
   }
 
   return (
-    <div className="rounded-lg border bg-white p-4">
-      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">
+    <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
         Orderbook — {selectedPosition}
       </h3>
       <OrderbookSide label={selectedPosition} bids={bids} asks={asks} />

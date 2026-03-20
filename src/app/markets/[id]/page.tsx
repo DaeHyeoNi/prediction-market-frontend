@@ -87,8 +87,8 @@ export default function MarketDetailPage() {
               heldQuantity={heldQuantity}
             />
           ) : (
-            <div className="rounded-lg border bg-white p-6 text-center text-sm text-gray-500">
-              <a href="/auth/login" className="text-blue-600 hover:underline">Login</a> to place orders
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 text-center text-sm text-gray-500 dark:text-gray-400">
+              <a href="/auth/login" className="text-blue-600 dark:text-blue-400 hover:underline">Login</a> to place orders
             </div>
           )}
         </div>
@@ -97,20 +97,20 @@ export default function MarketDetailPage() {
       {/* User data for this market */}
       {user && (
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-lg border bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">My Positions</h3>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">My Positions</h3>
             <PositionList positions={positions || []} marketId={marketId} />
           </div>
-          <div className="rounded-lg border bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">My Orders</h3>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">My Orders</h3>
             <OrderList orders={orders || []} marketId={marketId} />
           </div>
         </div>
       )}
 
       {/* Recent Trades */}
-      <div className="mt-4 rounded-lg border bg-white p-4">
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">Recent Trades</h3>
+      <div className="mt-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Recent Trades</h3>
         <TradeList trades={trades || []} />
       </div>
     </div>

@@ -24,7 +24,7 @@ export default function OrderbookSide({ bids, asks, label }: OrderbookSideProps)
   return (
     <div className="w-full">
       {/* 헤더 */}
-      <div className="mb-1 flex justify-between px-2 text-xs font-medium text-gray-400">
+      <div className="mb-1 flex justify-between px-2 text-xs font-medium text-gray-400 dark:text-gray-500">
         <span>Price ({label})</span>
         <span>Qty</span>
       </div>
@@ -41,17 +41,17 @@ export default function OrderbookSide({ bids, asks, label }: OrderbookSideProps)
       </div>
 
       {/* 스프레드 / 미드 */}
-      <div className="my-2 flex items-center gap-2 border-y border-gray-100 px-2 py-1.5">
+      <div className="my-2 flex items-center gap-2 border-y border-gray-100 dark:border-gray-700/60 px-2 py-1.5">
         {spread !== null ? (
           <>
-            <span className="text-sm font-bold text-gray-700">{mid}</span>
-            <span className="text-xs text-gray-400">Mid</span>
-            <span className="ml-auto text-xs text-gray-400">
-              Spread <span className="font-medium text-gray-600">{spread}</span>
+            <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{mid}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">Mid</span>
+            <span className="ml-auto text-xs text-gray-400 dark:text-gray-500">
+              Spread <span className="font-medium text-gray-600 dark:text-gray-300">{spread}</span>
             </span>
           </>
         ) : (
-          <span className="w-full text-center text-xs text-gray-300">No spread</span>
+          <span className="w-full text-center text-xs text-gray-400 dark:text-gray-500">No spread</span>
         )}
       </div>
 

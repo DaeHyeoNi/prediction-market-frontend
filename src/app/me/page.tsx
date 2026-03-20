@@ -32,9 +32,9 @@ export default function MePage() {
     <div className="mx-auto max-w-md">
       <h1 className="mb-6 text-2xl font-bold">My Account</h1>
 
-      <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
         {/* 헤더: 유저명 + 총 자산 */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5 text-white">
+        <div className="bg-gradient-to-r from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 px-6 py-5 text-white">
           <p className="mb-1 text-sm opacity-80">{me.username}</p>
           <p className="text-xs opacity-70 mb-3">Total Wealth</p>
           <p className="text-3xl font-bold font-mono">{totalWealth.toLocaleString()}</p>
@@ -42,31 +42,31 @@ export default function MePage() {
         </div>
 
         {/* 내역 */}
-        <div className="divide-y">
+        <div className="divide-y dark:divide-gray-700">
           {/* 보유 현금 */}
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">보유 현금</span>
-              <span className="font-mono font-semibold text-gray-900">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">보유 현금</span>
+              <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">
                 {me.total_points.toLocaleString()}
               </span>
             </div>
 
             <div className="mt-2 ml-4 space-y-1.5">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500 flex items-center gap-1">
-                  <span className="text-gray-400">├</span> 사용 가능
+                <span className="text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                  <span className="text-gray-400 dark:text-gray-500">├</span> 사용 가능
                 </span>
-                <span className="font-mono text-gray-700">
+                <span className="font-mono text-gray-700 dark:text-gray-300">
                   {me.available_points.toLocaleString()}
                 </span>
               </div>
               {locked > 0 && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400 flex items-center gap-1">
-                    <span className="text-gray-300">└</span> 주문 잠김
+                  <span className="text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                    <span className="text-gray-300 dark:text-gray-600">└</span> 주문 잠김
                   </span>
-                  <span className="font-mono text-gray-400">
+                  <span className="font-mono text-gray-400 dark:text-gray-500">
                     {locked.toLocaleString()}
                   </span>
                 </div>
@@ -78,10 +78,10 @@ export default function MePage() {
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm font-medium text-blue-700">포지션 평가액</span>
-                <p className="text-xs text-gray-400 mt-0.5">OPEN 마켓 기준 시장가</p>
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-400">포지션 평가액</span>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">OPEN 마켓 기준 시장가</p>
               </div>
-              <span className="font-mono font-semibold text-blue-700">
+              <span className="font-mono font-semibold text-blue-700 dark:text-blue-400">
                 {portfolioValue.toLocaleString()}
               </span>
             </div>

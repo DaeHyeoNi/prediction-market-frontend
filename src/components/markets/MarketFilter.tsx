@@ -20,10 +20,10 @@ export default function MarketFilter({ value, onChange }: MarketFilterProps) {
           key={opt}
           onClick={() => onChange(opt)}
           className={cn(
-            'rounded-full px-4 py-1.5 text-sm font-medium transition',
+            'rounded-full px-3 py-1 text-xs font-medium transition',
             value === opt
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              ? 'bg-blue-600 dark:bg-blue-700 text-white'
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
           )}
         >
           {opt}

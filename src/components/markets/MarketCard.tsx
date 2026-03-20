@@ -4,25 +4,40 @@ import MarketStatusBadge from './MarketStatusBadge'
 import { formatDate } from '@/lib/utils/format'
 
 export default function MarketCard({ market, bestYesBid }: { market: Market; bestYesBid?: number }) {
+  const yesPrice = bestYesBid ?? 50
+  const noPrice = 100 - yesPrice
+
   return (
     <Link
       href={`/markets/${market.id}`}
-      className="block rounded-lg border bg-white p-5 shadow-sm transition hover:shadow-md"
+      className="block rounded-lg border border-gray-200 dark:border-gray-700/60 bg-white dark:bg-gray-900 p-5 shadow-sm transition hover:shadow-md dark:hover:border-gray-600 hover:border-gray-300"
     >
       <div className="mb-3 flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-gray-900 leading-snug">{market.title}</h3>
-        <MarketStatusBadge status={market.status} />
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 leading-snug line-clamp-2">{market.title}</h3>
+        <div className="shrink-0"><MarketStatusBadge status={market.status} /></div>
       </div>
-      <div className="flex items-center justify-between text-xs text-gray-500">
-        <span>Closes: {formatDate(market.closes_at)}</span>
-        <div className="flex items-center gap-2">
-          {bestYesBid !== undefined && (
-            <span className="font-medium text-green-600">YES {bestYesBid}</span>
-          )}
-          {market.result && (
-            <span className="font-medium text-blue-600">Result: {market.result}</span>
-          )}
+
+      {market.status === 'Resolved' && market.result ? (
+        <div className="mb-3 flex items-center gap-2">
+          <span className={`text-sm font-bold px-2 py-0.5 rounded ${market.result === 'YES' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+            Resolved: {market.result}
+          </span>
         </div>
+      ) : market.status === 'Open' ? (
+        <div className="mb-3 flex gap-2">
+          <div className="flex-1 rounded bg-green-50 dark:bg-green-900/20 px-3 py-2 text-center">
+            <p className="text-xs text-green-600 dark:text-green-500 mb-0.5">YES</p>
+            <p className="font-mono font-bold text-green-700 dark:text-green-400">{yesPrice}</p>
+          </div>
+          <div className="flex-1 rounded bg-red-50 dark:bg-red-900/20 px-3 py-2 text-center">
+            <p className="text-xs text-red-500 dark:text-red-400 mb-0.5">NO</p>
+            <p className="font-mono font-bold text-red-600 dark:text-red-400">{noPrice}</p>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="text-xs text-gray-400 dark:text-gray-500">
+        {market.status === 'Resolved' ? `Resolved: ${formatDate(market.resolved_at ?? market.closes_at)}` : `Closes: ${formatDate(market.closes_at)}`}
       </div>
     </Link>
   )
