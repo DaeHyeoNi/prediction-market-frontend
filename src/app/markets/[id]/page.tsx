@@ -53,11 +53,22 @@ export default function MarketDetailPage() {
 
   const isOpen = market.status === 'Open'
 
-  // 현재 마켓에서 선택된 포지션의 보유량
-  const heldQuantity =
+  // 현재 마켓에서 선택된 포지션의 보유량 (오픈 ASK 주문 잔량 차감)
+  const positionQty =
     positions?.find(
       (p) => p.market_id === marketId && p.position === selectedPosition
     )?.quantity ?? 0
+  const lockedInAsks =
+    orders
+      ?.filter(
+        (o) =>
+          o.market_id === marketId &&
+          o.position === selectedPosition &&
+          o.order_type === 'Ask' &&
+          ['Pending', 'Open', 'Partial'].includes(o.status)
+      )
+      .reduce((sum, o) => sum + o.remaining_quantity, 0) ?? 0
+  const heldQuantity = Math.max(0, positionQty - lockedInAsks)
 
   // 최우선 YES 가격 계산
   const yesBestBid = orderbook?.yes_bids?.length ? Math.max(...orderbook.yes_bids.map(e => e.price)) : null
