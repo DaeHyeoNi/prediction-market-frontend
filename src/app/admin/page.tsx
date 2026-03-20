@@ -33,25 +33,25 @@ export default function AdminPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Admin</h1>
+      <h1 className="mb-6 text-2xl font-bold dark:text-gray-100">Admin</h1>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Create Market */}
-        <div className="rounded-lg border bg-white p-5">
-          <h2 className="mb-4 text-sm font-semibold text-gray-600 uppercase tracking-wide">Create Market</h2>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+          <h2 className="mb-4 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Create Market</h2>
           <CreateMarketForm />
         </div>
 
         {/* Markets table */}
-        <div className="rounded-lg border bg-white p-5 lg:col-span-2">
-          <h2 className="mb-4 text-sm font-semibold text-gray-600 uppercase tracking-wide">Manage Markets</h2>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 lg:col-span-2">
+          <h2 className="mb-4 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Manage Markets</h2>
           {marketsLoading ? (
             <Spinner />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b text-left text-xs text-gray-500">
+                  <tr className="border-b dark:border-gray-700 text-left text-xs text-gray-500 dark:text-gray-400">
                     <th className="pb-2 pr-4">ID</th>
                     <th className="pb-2 pr-4">Title</th>
                     <th className="pb-2 pr-4">Status</th>
@@ -66,7 +66,7 @@ export default function AdminPage() {
                 </tbody>
               </table>
               {markets?.length === 0 && (
-                <p className="py-4 text-center text-sm text-gray-500">No markets yet.</p>
+                <p className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">No markets yet.</p>
               )}
             </div>
           )}

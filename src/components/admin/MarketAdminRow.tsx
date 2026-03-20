@@ -12,13 +12,13 @@ export default function MarketAdminRow({ market }: { market: Market }) {
 
   return (
     <>
-      <tr className="border-b">
-        <td className="py-3 pr-4">{market.id}</td>
-        <td className="py-3 pr-4">{market.title}</td>
+      <tr className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+        <td className="py-3 pr-4 dark:text-gray-300">{market.id}</td>
+        <td className="py-3 pr-4 dark:text-gray-200">{market.title}</td>
         <td className="py-3 pr-4">
           <MarketStatusBadge status={market.status} />
         </td>
-        <td className="py-3 pr-4 text-xs text-gray-500">{formatDate(market.closes_at)}</td>
+        <td className="py-3 pr-4 text-xs text-gray-500 dark:text-gray-400">{formatDate(market.closes_at)}</td>
         <td className="py-3">
           <div className="flex gap-2">
             {market.status !== 'Resolved' && (
@@ -27,7 +27,7 @@ export default function MarketAdminRow({ market }: { market: Market }) {
               </Button>
             )}
             {market.status === 'Resolved' && (
-              <span className="text-xs text-gray-400">Result: {market.result}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">Result: {market.result}</span>
             )}
           </div>
         </td>

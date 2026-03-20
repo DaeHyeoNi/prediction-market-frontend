@@ -41,7 +41,7 @@ export default function SettleMarketModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Resolve Market">
-      <p className="mb-4 text-sm text-gray-600">{marketTitle}</p>
+      <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">{marketTitle}</p>
       <div className="mb-4 flex gap-2">
         {(['YES', 'NO'] as Position[]).map((pos) => (
           <button
@@ -52,7 +52,7 @@ export default function SettleMarketModal({
                 ? pos === 'YES'
                   ? 'bg-green-600 text-white'
                   : 'bg-red-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
             {pos}

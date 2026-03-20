@@ -49,17 +49,17 @@ export default function RegisterPage() {
 
   return (
     <div className="mx-auto mt-16 max-w-sm">
-      <h1 className="mb-6 text-center text-2xl font-bold">Register</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 rounded-lg border bg-white p-6 shadow-sm">
+      <h1 className="mb-6 text-center text-2xl font-bold dark:text-gray-100">Register</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
         <Input label="Username" {...register('username')} error={errors.username?.message} />
         <Input label="Password" type="password" {...register('password')} error={errors.password?.message} />
         <ErrorMessage message={error} />
         <Button type="submit" isLoading={isSubmitting} className="w-full">
           Register
         </Button>
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
           Have an account?{' '}
-          <Link href="/auth/login" className="text-blue-600 hover:underline">
+          <Link href="/auth/login" className="text-blue-600 dark:text-blue-400 hover:underline">
             Login
           </Link>
         </p>

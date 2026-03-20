@@ -16,6 +16,7 @@ import Spinner from '@/components/ui/Spinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { formatDate } from '@/lib/utils/format'
 import { Position } from '@/lib/types/api'
+import PriceSparkline from '@/components/markets/PriceSparkline'
 
 export default function MarketDetailPage() {
   const params = useParams()
@@ -50,21 +51,68 @@ export default function MarketDetailPage() {
       (p) => p.market_id === marketId && p.position === selectedPosition
     )?.quantity ?? 0
 
+  // 최우선 YES 가격 계산
+  const yesBestBid = orderbook?.yes_bids?.length ? Math.max(...orderbook.yes_bids.map(e => e.price)) : null
+  const yesBestAsk = orderbook?.yes_asks?.length ? Math.min(...orderbook.yes_asks.map(e => e.price)) : null
+  const yesMid = yesBestBid !== null && yesBestAsk !== null ? Math.round((yesBestBid + yesBestAsk) / 2) : (yesBestBid ?? yesBestAsk)
+  const noMid = yesMid !== null ? 100 - yesMid : null
+
+  // 마지막 체결가
+  const lastPrice = trades && trades.length > 0 ? trades[0].price : null
+
   return (
     <div>
       {/* Header */}
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">{market.title}</h1>
-          {market.description && (
-            <p className="mt-1 text-sm text-gray-500">{market.description}</p>
-          )}
-          <p className="mt-1 text-sm text-gray-500">Closes: {formatDate(market.closes_at)}</p>
-          {market.result && (
-            <p className="mt-1 text-sm font-medium text-blue-600">Result: {market.result}</p>
-          )}
+      <div className="mb-6 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold dark:text-gray-100 leading-snug">{market.title}</h1>
+            {market.description && (
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{market.description}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+              {market.status === 'Resolved'
+                ? `Resolved ${formatDate(market.resolved_at ?? market.closes_at)}`
+                : `Closes ${formatDate(market.closes_at)}`}
+            </p>
+          </div>
+          <MarketStatusBadge status={market.status} />
         </div>
-        <MarketStatusBadge status={market.status} />
+
+        {/* Live price strip */}
+        {market.status !== 'Resolved' ? (
+          <div className="flex gap-3">
+            <div className="flex-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 px-4 py-3">
+              <p className="text-xs text-green-600 dark:text-green-500 mb-1 font-medium">YES</p>
+              <p className="text-2xl font-bold font-mono text-green-700 dark:text-green-400">
+                {yesMid ?? '—'}
+              </p>
+              {yesBestBid !== null && yesBestAsk !== null && (
+                <p className="text-xs text-green-600/70 dark:text-green-600 mt-0.5">{yesBestBid} / {yesBestAsk}</p>
+              )}
+            </div>
+            <div className="flex-1 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 px-4 py-3">
+              <p className="text-xs text-red-500 dark:text-red-400 mb-1 font-medium">NO</p>
+              <p className="text-2xl font-bold font-mono text-red-600 dark:text-red-400">
+                {noMid ?? '—'}
+              </p>
+              {yesBestBid !== null && yesBestAsk !== null && (
+                <p className="text-xs text-red-500/70 dark:text-red-600 mt-0.5">{100 - yesBestAsk} / {100 - yesBestBid}</p>
+              )}
+            </div>
+            {lastPrice !== null && (
+              <div className="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Last</p>
+                <p className="text-2xl font-bold font-mono text-gray-700 dark:text-gray-200">{lastPrice}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">YES</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold ${market.result === 'YES' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
+            Result: {market.result}
+          </div>
+        )}
       </div>
 
       {/* Main grid */}
@@ -72,7 +120,7 @@ export default function MarketDetailPage() {
         {orderbook ? (
           <Orderbook orderbook={orderbook} selectedPosition={selectedPosition} />
         ) : (
-          <div className="flex items-center justify-center rounded-lg border bg-white p-8">
+          <div className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-8">
             <Spinner />
           </div>
         )}
@@ -85,6 +133,7 @@ export default function MarketDetailPage() {
               selectedPosition={selectedPosition}
               onPositionChange={setSelectedPosition}
               heldQuantity={heldQuantity}
+              orderbook={orderbook}
             />
           ) : (
             <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -108,9 +157,17 @@ export default function MarketDetailPage() {
         </div>
       )}
 
-      {/* Recent Trades */}
+      {/* Recent Trades with price chart */}
       <div className="mt-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Recent Trades</h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Recent Trades</h3>
+          {trades && trades.length >= 2 && (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-gray-400 dark:text-gray-500">Price history</span>
+              <PriceSparkline trades={trades} width={100} height={32} />
+            </div>
+          )}
+        </div>
         <TradeList trades={trades || []} />
       </div>
     </div>

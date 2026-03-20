@@ -21,7 +21,7 @@ export async function createMarket(data: { title: string; closes_at: string; des
   return response.data
 }
 
-export async function getTrades(id: number, limit = 20): Promise<Trade[]> {
+export async function getTrades(id: number, limit = 50): Promise<Trade[]> {
   const response = await apiClient.get<Trade[]>(`/markets/${id}/trades`, {
     params: { limit },
   })

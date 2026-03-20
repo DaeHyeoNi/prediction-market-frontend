@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Position, OrderType } from '@/lib/types/api'
+import { Position, OrderType, Orderbook } from '@/lib/types/api'
 import { usePlaceOrder } from '@/lib/hooks/usePlaceOrder'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -24,6 +24,7 @@ interface OrderFormProps {
   selectedPosition: Position
   onPositionChange: (p: Position) => void
   heldQuantity: number
+  orderbook?: Orderbook
 }
 
 export default function OrderForm({
@@ -32,6 +33,7 @@ export default function OrderForm({
   selectedPosition,
   onPositionChange,
   heldQuantity,
+  orderbook,
 }: OrderFormProps) {
   const { mutate: placeOrder, isPending } = usePlaceOrder(marketId)
   const [pendingOrder, setPendingOrder] = useState<FormValues | null>(null)
@@ -56,6 +58,15 @@ export default function OrderForm({
   const quantity = watch('quantity')
   const companionPrice = price ? 100 - Number(price) : 50
   const estimatedCost = Number(price) * Number(quantity)
+
+  // Best bid/ask from orderbook for quick price buttons
+  const yesBook = orderbook
+  const yesBestBid = yesBook?.yes_bids?.length ? Math.max(...yesBook.yes_bids.map(e => e.price)) : null
+  const yesBestAsk = yesBook?.yes_asks?.length ? Math.min(...yesBook.yes_asks.map(e => e.price)) : null
+  const noBestBid = yesBestAsk !== null ? 100 - yesBestAsk : null
+  const noBestAsk = yesBestBid !== null ? 100 - yesBestBid : null
+  const bestBid = selectedPosition === 'YES' ? yesBestBid : noBestBid
+  const bestAsk = selectedPosition === 'YES' ? yesBestAsk : noBestAsk
 
   const onSubmit = (data: FormValues) => {
     setPendingOrder(data)
@@ -151,6 +162,36 @@ export default function OrderForm({
             {...register('price', { valueAsNumber: true })}
             error={errors.price?.message}
           />
+          {/* Quick price buttons */}
+          {(bestBid !== null || bestAsk !== null) && (
+            <div className="mt-1.5 flex gap-1.5 flex-wrap">
+              {bestBid !== null && (
+                <button
+                  type="button"
+                  onClick={() => setValue('price', bestBid, { shouldValidate: true })}
+                  className="rounded px-2 py-0.5 text-xs font-medium bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
+                >
+                  Bid {bestBid}
+                </button>
+              )}
+              {bestAsk !== null && (
+                <button
+                  type="button"
+                  onClick={() => setValue('price', bestAsk, { shouldValidate: true })}
+                  className="rounded px-2 py-0.5 text-xs font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
+                >
+                  Ask {bestAsk}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setValue('price', 50, { shouldValidate: true })}
+                className="rounded px-2 py-0.5 text-xs font-medium bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                Mid 50
+              </button>
+            </div>
+          )}
           <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
             {selectedPosition === 'YES' ? 'NO' : 'YES'} price: {companionPrice}
           </p>
