@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getMarket, getOrderbook, getTrades } from '@/lib/api/markets'
+import { getMarket, getMyMarketResult, getOrderbook, getTrades } from '@/lib/api/markets'
 import { queryKeys } from './queryKeys'
 
 export function useMarket(id: number) {
@@ -22,5 +22,13 @@ export function useTrades(id: number) {
     queryKey: queryKeys.trades(id),
     queryFn: () => getTrades(id),
     refetchInterval: 3000,
+  })
+}
+
+export function useMyMarketResult(id: number, enabled = true) {
+  return useQuery({
+    queryKey: queryKeys.myMarketResult(id),
+    queryFn: () => getMyMarketResult(id),
+    enabled,
   })
 }

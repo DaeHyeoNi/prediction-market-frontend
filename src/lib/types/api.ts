@@ -14,6 +14,29 @@ export interface Market {
   created_by: number
   created_at: string
   resolved_at: string | null
+  last_trade_price?: number | null
+}
+
+export interface PositionResult {
+  id: number
+  user_id: number
+  market_id: number
+  position: Position
+  quantity: number
+  avg_price: number
+  total_cost: number
+  payout: number | null
+}
+
+export interface MarketMyResult {
+  market_id: number
+  market_title: string
+  market_status: MarketStatus
+  market_result: MarketResult
+  positions: PositionResult[]
+  total_payout: number | null
+  total_cost: number
+  total_profit: number | null
 }
 
 export interface OrderbookEntry {

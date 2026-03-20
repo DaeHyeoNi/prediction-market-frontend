@@ -1,5 +1,5 @@
 import apiClient from './client'
-import { Market, Orderbook, Trade } from '@/lib/types/api'
+import { Market, MarketMyResult, Orderbook, Trade } from '@/lib/types/api'
 
 export async function getMarkets(): Promise<Market[]> {
   const response = await apiClient.get<Market[]>('/markets')
@@ -25,5 +25,10 @@ export async function getTrades(id: number, limit = 50): Promise<Trade[]> {
   const response = await apiClient.get<Trade[]>(`/markets/${id}/trades`, {
     params: { limit },
   })
+  return response.data
+}
+
+export async function getMyMarketResult(id: number): Promise<MarketMyResult> {
+  const response = await apiClient.get<MarketMyResult>(`/markets/${id}/my-result`)
   return response.data
 }

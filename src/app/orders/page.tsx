@@ -42,14 +42,25 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
         <h1 className="text-2xl font-bold dark:text-gray-100">My Orders</h1>
-        {totalLocked > 0 && (
-          <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 px-3 py-1.5 text-xs">
-            <span className="text-yellow-700 dark:text-yellow-400">Locked in orders: </span>
-            <span className="font-mono font-semibold text-yellow-800 dark:text-yellow-300">{totalLocked.toLocaleString()} pts</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {totalLocked > 0 && (
+            <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 px-3 py-1.5 text-xs">
+              <span className="text-yellow-700 dark:text-yellow-400">Locked: </span>
+              <span className="font-mono font-semibold text-yellow-800 dark:text-yellow-300">{totalLocked.toLocaleString()} pts</span>
+            </div>
+          )}
+          {activeOrders.length > 1 && (
+            <button
+              onClick={() => activeOrders.filter(o => CANCELLABLE.includes(o.status)).forEach(o => cancel(o.id))}
+              disabled={cancelling}
+              className="rounded-lg border border-red-200 dark:border-red-800 px-3 py-1.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-colors"
+            >
+              Cancel All ({activeOrders.length})
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mb-4 flex gap-1 border-b dark:border-gray-700">

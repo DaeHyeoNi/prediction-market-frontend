@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useMarket, useOrderbook, useTrades } from '@/lib/hooks/useMarket'
+import { useMarket, useMyMarketResult, useOrderbook, useTrades } from '@/lib/hooks/useMarket'
 import { useOrders } from '@/lib/hooks/useOrders'
 import { usePositions } from '@/lib/hooks/usePositions'
 import { useAuth } from '@/context/AuthContext'
@@ -31,6 +31,7 @@ export default function MarketDetailPage() {
   const { data: orders } = useOrders()
   const { data: positions } = usePositions()
   const { data: trades } = useTrades(marketId)
+  const { data: myResult } = useMyMarketResult(marketId, !!user)
 
   if (isLoading) {
     return (
@@ -120,8 +121,27 @@ export default function MarketDetailPage() {
             )}
           </div>
         ) : (
-          <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold ${market.result === 'YES' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
-            Result: {market.result}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold ${market.result === 'YES' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
+              Result: {market.result}
+            </div>
+            {user && myResult && myResult.positions.length > 0 && (
+              <div className={`flex items-center gap-3 rounded-lg border px-4 py-2 text-sm ${(myResult.total_profit ?? 0) >= 0 ? 'border-green-200 dark:border-green-800/60 bg-green-50 dark:bg-green-900/10' : 'border-red-200 dark:border-red-800/60 bg-red-50 dark:bg-red-900/10'}`}>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <span>Cost: </span><span className="font-mono font-medium dark:text-gray-300">{myResult.total_cost.toLocaleString()}</span>
+                </div>
+                {myResult.total_payout !== null && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    <span>Payout: </span><span className="font-mono font-medium dark:text-gray-300">{myResult.total_payout.toLocaleString()}</span>
+                  </div>
+                )}
+                {myResult.total_profit !== null && (
+                  <div className={`text-sm font-bold font-mono ${myResult.total_profit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                    {myResult.total_profit >= 0 ? '+' : ''}{myResult.total_profit.toLocaleString()} pts
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
