@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -91,6 +91,27 @@ export default function OrderForm({
     }
   }, [externalPrice, setValue, onExternalPriceConsumed])
 
+  // 키보드 단축키: ESC(다이얼로그 닫기), B/S(Buy/Sell), Y/N(YES/NO 포지션)
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // 입력 필드에 포커스 있을 때는 무시
+    const tag = (e.target as HTMLElement)?.tagName
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+
+    if (e.key === 'Escape' && pendingOrder) {
+      setPendingOrder(null)
+    } else if (!pendingOrder && !disabled) {
+      if (e.key === 'b' || e.key === 'B') setValue('order_type', 'Bid')
+      else if ((e.key === 's' || e.key === 'S') && heldQuantity > 0) setValue('order_type', 'Ask')
+      else if (e.key === 'y' || e.key === 'Y') { onPositionChange('YES'); setValue('order_type', 'Bid') }
+      else if (e.key === 'n' || e.key === 'N') { onPositionChange('NO'); setValue('order_type', 'Bid') }
+    }
+  }, [pendingOrder, disabled, heldQuantity, setValue, onPositionChange])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
   const onSubmit = (data: FormValues) => {
     setPendingOrder(data)
   }
@@ -114,7 +135,10 @@ export default function OrderForm({
 
   return (
     <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Place Order</h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Place Order</h3>
+        <span className="text-xs text-gray-300 dark:text-gray-600">Y/N · B/S · Esc</span>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 
         {/* Position toggle */}
