@@ -62,6 +62,21 @@ export default function MarketCard({ market, bestYesBid, myPosition }: { market:
         </div>
       ) : null}
 
+      {/* 확률 바 (Open 마켓, 가격 데이터 있을 때) */}
+      {market.status === 'Open' && (hasPrice || lastPrice) && (() => {
+        const yesProb = hasPrice ? bestYesBid! : lastPrice!
+        return (
+          <div className="mb-3">
+            <div className="h-1.5 w-full rounded-full overflow-hidden bg-red-100 dark:bg-red-900/30">
+              <div
+                className="h-full rounded-full bg-green-500 dark:bg-green-600 transition-all duration-500"
+                style={{ width: `${yesProb}%` }}
+              />
+            </div>
+          </div>
+        )
+      })()}
+
       <div className="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-between">
         {market.status === 'Resolved' ? (
           <span>Resolved {formatRelativeDate(market.resolved_at ?? market.closes_at)}</span>

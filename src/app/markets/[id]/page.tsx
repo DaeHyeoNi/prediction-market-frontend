@@ -182,7 +182,7 @@ export default function MarketDetailPage() {
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">My Positions</h3>
-            <PositionList positions={positions || []} marketId={marketId} />
+            <PositionList positions={positions || []} marketId={marketId} currentYesPrice={yesMid} />
           </div>
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">My Orders</h3>
