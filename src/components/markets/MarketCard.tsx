@@ -6,6 +6,7 @@ import { formatDate, formatRelativeDate } from '@/lib/utils/format'
 export default function MarketCard({ market, bestYesBid, myPosition }: { market: Market; bestYesBid?: number; myPosition?: Position }) {
   const hasPrice = bestYesBid !== undefined
   const noPrice = hasPrice ? 100 - bestYesBid! : undefined
+  const lastPrice = market.last_trade_price
 
   return (
     <Link
@@ -35,15 +36,29 @@ export default function MarketCard({ market, bestYesBid, myPosition }: { market:
           <div className="flex-1 rounded bg-green-50 dark:bg-green-900/20 px-3 py-2 text-center">
             <p className="text-xs text-green-600 dark:text-green-500 mb-0.5">YES</p>
             <p className="font-mono font-bold text-green-700 dark:text-green-400">
-              {hasPrice ? bestYesBid : <span className="text-gray-400 dark:text-gray-600">—</span>}
+              {hasPrice ? `${bestYesBid}¢` : lastPrice ? <span className="text-gray-500 dark:text-gray-400">{lastPrice}¢</span> : <span className="text-gray-400 dark:text-gray-600">—</span>}
             </p>
           </div>
           <div className="flex-1 rounded bg-red-50 dark:bg-red-900/20 px-3 py-2 text-center">
             <p className="text-xs text-red-500 dark:text-red-400 mb-0.5">NO</p>
             <p className="font-mono font-bold text-red-600 dark:text-red-400">
-              {hasPrice ? noPrice : <span className="text-gray-400 dark:text-gray-600">—</span>}
+              {hasPrice ? `${noPrice}¢` : lastPrice ? <span className="text-gray-500 dark:text-gray-400">{100 - lastPrice}¢</span> : <span className="text-gray-400 dark:text-gray-600">—</span>}
             </p>
           </div>
+          {!hasPrice && lastPrice && (
+            <div className="flex items-end pb-2">
+              <span className="text-xs text-gray-400 dark:text-gray-500">last</span>
+            </div>
+          )}
+        </div>
+      ) : market.status === 'Closed' ? (
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-xs text-yellow-600 dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-800/50">
+            Pending resolution
+          </span>
+          {lastPrice && (
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">Last: {lastPrice}¢</span>
+          )}
         </div>
       ) : null}
 

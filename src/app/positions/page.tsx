@@ -105,9 +105,37 @@ export default function PositionsPage() {
     )
   }
 
+  // 전체 통계 계산
+  const totalActiveCost = activePositions.reduce((sum, p) => sum + p.quantity * p.avg_price, 0)
+  const resolvedPnl = resolvedPositions.reduce((sum, p) => {
+    const market = marketMap.get(p.market_id)
+    if (!market || !market.result) return sum
+    return sum + (market.result === p.position
+      ? (100 - p.avg_price) * p.quantity
+      : -p.avg_price * p.quantity)
+  }, 0)
+
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold dark:text-gray-100">My Positions</h1>
+      <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+        <h1 className="text-2xl font-bold dark:text-gray-100">My Positions</h1>
+        <div className="flex gap-3 flex-wrap">
+          {activePositions.length > 0 && (
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-right">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Active Cost</p>
+              <p className="font-mono font-semibold text-gray-800 dark:text-gray-200">{totalActiveCost.toLocaleString()} pts</p>
+            </div>
+          )}
+          {resolvedPositions.length > 0 && (
+            <div className={`rounded-lg border px-4 py-2.5 text-right ${resolvedPnl >= 0 ? 'border-green-200 dark:border-green-800/60 bg-green-50 dark:bg-green-900/10' : 'border-red-200 dark:border-red-800/60 bg-red-50 dark:bg-red-900/10'}`}>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Realized P&L</p>
+              <p className={`font-mono font-semibold ${resolvedPnl >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                {resolvedPnl >= 0 ? '+' : ''}{resolvedPnl.toLocaleString()} pts
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="mb-4 flex gap-1 border-b dark:border-gray-700">
         {(['active', 'resolved'] as Tab[]).map((t) => {
