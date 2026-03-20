@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext'
 import { ToastProvider } from '@/context/ToastContext'
 import { ThemeProvider } from '@/context/ThemeContext'
 import Navbar from '@/components/layout/Navbar'
+import OrderNotifier from '@/components/layout/OrderNotifier'
 
 export const metadata: Metadata = {
   title: 'PredictMarket',
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AuthProvider>
               <ToastProvider>
                 <Navbar />
+                <OrderNotifier />
                 <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
               </ToastProvider>
             </AuthProvider>
